@@ -59,7 +59,7 @@ const AppLayout = ({ children }) => {
             target='_blank'
             rel='noreferrer noopener'
           >
-            By min33sky
+            By MingtypE
           </a>
         </Col>
       </Row>
