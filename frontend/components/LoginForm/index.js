@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import useInput from '../../hooks/useInput';
 
 const ButtonWrapper = styled.div`
   margin-top: 20px;
@@ -16,21 +17,8 @@ const FormWrapper = styled(Form)`
  * 로그인 컴포넌트
  */
 const LoginForm = ({ setIsLoggedIn }) => {
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
-
-  const onChangeId = useCallback((e) => {
-    setId(e.target.value);
-  }, []);
-
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
-
-  const onChangePasswordCheck = useCallback((e) => {
-    setPasswordCheck(e.target.value);
-  }, []);
+  const [id, onChangeId] = useInput('');
+  const [password, onChangePassword] = useInput('');
 
   /*
     ! onFinish()에는 e.defaultPrevent()가 자동 호출된다.
@@ -60,16 +48,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
           name='user-id'
           value={password}
           onChange={onChangePassword}
-        ></Input>
-      </div>
-      <div>
-        <label htmlFor='user-passwordCheck'>패스워드 확인</label>
-        <br></br>
-        <Input
-          type='password'
-          name='user-id'
-          value={passwordCheck}
-          onChange={onChangePasswordCheck}
         ></Input>
       </div>
 
