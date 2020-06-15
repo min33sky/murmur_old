@@ -2,8 +2,9 @@ import React, { useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import useInput from '../../hooks/useInput';
+import { useDispatch } from 'react-redux';
+import { loginAction } from '../../reducers/user';
 
 const ButtonWrapper = styled.div`
   margin-top: 20px;
@@ -16,16 +17,17 @@ const FormWrapper = styled(Form)`
 /**
  * 로그인 컴포넌트
  */
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = () => {
   const [id, onChangeId] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const dispatch = useDispatch();
 
   /*
     ! onFinish()에는 e.defaultPrevent()가 자동 호출된다.
   */
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
-    setIsLoggedIn(true);
+    dispatch(loginAction());
   }, [id, password]);
 
   return (
@@ -61,10 +63,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
       </ButtonWrapper>
     </FormWrapper>
   );
-};
-
-LoginForm.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
