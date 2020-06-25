@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
 import { Form, Input } from 'antd';
 
-function NicknameEditFrom() {
+/**
+ * 닉네임 수정 폼
+ */
+function NicknameForm() {
   // ? styled-components 대신 useMemo를 사용하여 리랜더링을 막기
   const style = useMemo(() => ({
     marginBottom: '20px',
@@ -16,4 +19,4 @@ function NicknameEditFrom() {
   );
 }
 
-export default NicknameEditFrom;
+export default NicknameForm;

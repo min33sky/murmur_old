@@ -7,7 +7,8 @@ import Header from './Header';
 import { useSelector } from 'react-redux';
 
 /**
- * * 전반적인 레이아웃을 담당하는 컴포넌트
+ * 전반적인 레이아웃을 담당하는 컴포넌트
+ * @param {React.ReactNode} children 레이아웃을 적용 할 컴포넌트
  */
 const AppLayout = ({ children }) => {
   const { isLoggedIn } = useSelector((state) => state.user);

@@ -20,6 +20,7 @@ const Signup = () => {
 
   const [passwordCheck, setPasswordCheck] = useState('');
   const [passwordError, setPasswordError] = useState(false);
+
   const onChangePasswordCheck = useCallback(
     (e) => {
       setPasswordCheck(e.target.value);
@@ -30,6 +31,7 @@ const Signup = () => {
 
   const [term, setTerm] = useState(false);
   const [termError, setTermError] = useState(false);
+
   const onChangeTerm = useCallback((e) => {
     setTerm(e.target.checked);
     setTermError(false);
@@ -53,14 +55,21 @@ const Signup = () => {
         <div>
           <label htmlFor='user-id'>아이디</label>
           <br />
-          <Input type='text' value={id} onChange={onChangeId} required />
+          <Input
+            type='text'
+            id='user-id'
+            value={id}
+            onChange={onChangeId}
+            required
+          />
         </div>
 
         <div>
-          <label htmlFor='user-nickname'>닉네임</label>
+          <label htmlFor='nickname'>닉네임</label>
           <br />
           <Input
             type='text'
+            id='nickname'
             value={nickname}
             onChange={onChangeNickname}
             required
@@ -72,6 +81,7 @@ const Signup = () => {
           <br />
           <Input
             type='text'
+            id='password'
             value={password}
             onChange={onChangePassword}
             required
@@ -83,6 +93,7 @@ const Signup = () => {
           <br />
           <Input
             type='text'
+            id='passwordCheck'
             value={passwordCheck}
             onChange={onChangePasswordCheck}
             required

@@ -5,7 +5,12 @@ import FollowList from '../components/FollowList';
 import { Typography } from 'antd';
 const { Title, Paragraph } = Typography;
 
+/**
+ * 프로필 페이지
+ * : 로그인한 사용자만 이용 가능
+ */
 const Profile = () => {
+  // Dummy Data
   const followerList = [
     { nickname: 'messi' },
     { nickname: 'ronaldo' },
@@ -28,7 +33,6 @@ const Profile = () => {
         <FollowList header='팔로워 목록' data={followerList} />
         <FollowList header='팔로잉 목록' data={followingList} />
       </AppLayout>
-      ;
     </>
   );
 };

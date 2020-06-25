@@ -5,12 +5,15 @@ import styled from 'styled-components';
 
 /*
   ? Inline CSS는 객체이므로 리랜더링이 발생한다.
-  - styledComponents 또는 React Memo를 사용하여 해결
+  ? styledComponents 또는 React Memo를 사용하여 해결
 */
 const InputSearch = styled(Input.Search)`
   vertical-align: middle;
 `;
 
+/**
+ * AppLayout의 Header 컴포넌트
+ */
 function Header() {
   return (
     <>

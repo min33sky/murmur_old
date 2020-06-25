@@ -3,6 +3,9 @@ import { Card, Avatar, Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { logoutAction } from '../reducers/user';
 
+/**
+ * 프로필 컴포넌트
+ */
 function UserProfile() {
   const dispatch = useDispatch();
 

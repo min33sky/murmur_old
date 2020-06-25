@@ -23,7 +23,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
 
   /*
-    ! onFinish()에는 e.defaultPrevent()가 자동 호출된다.
+    ? onFinish()에는 e.defaultPrevent()가 자동 호출된다.
   */
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
@@ -34,20 +34,20 @@ const LoginForm = () => {
     <FormWrapper onFinish={onSubmitForm}>
       <div>
         <label htmlFor='user-id'>아이디</label>
-        <br></br>
+        <br />
         <Input
           type='text'
-          name='user-id'
+          id='user-id'
           value={id}
           onChange={onChangeId}
         ></Input>
       </div>
       <div>
-        <label htmlFor='user-password'>패스워드</label>
-        <br></br>
+        <label htmlFor='password'>패스워드</label>
+        <br />
         <Input
           type='password'
-          name='user-id'
+          id='password'
           value={password}
           onChange={onChangePassword}
         ></Input>

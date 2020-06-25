@@ -14,9 +14,12 @@ const ListItemWrapper = styled(List.Item)`
 `;
 
 /**
- * 팔로우 리스트  컴포넌트
+ * 팔로우 리스트 컴포넌트
+ * @param {header} param0
+ * @param {data} param0
  */
 function FollowList({ header, data }) {
+  // ? useMemo로 스타일 객체를 감싸서 리렌더링을 방지할 수 있다.
   const listStyle = useMemo(() => ({ marginBottom: 20 }), []);
   const grid = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }), []);
   const cardMetaStyle = useMemo(() => ({ textAlign: 'center' }), []);

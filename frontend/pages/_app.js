@@ -5,7 +5,8 @@ import 'antd/dist/antd.css';
 import wrapper from '../store/configureStore';
 
 /**
- * * pages의 공통 부분
+ * NEXT의 시작 컴포넌트
+ * @param {React.ReactNode} Component pages 폴더안의 컴포넌트
  */
 const Murmur = ({ Component }) => {
   return (
@@ -23,5 +24,7 @@ Murmur.propTypes = {
   Component: PropTypes.elementType.isRequired,
 };
 
-// * next에 redux 적용하기
+/*
+ * Next에 Redux 적용하기
+ */
 export default wrapper.withRedux(Murmur);
