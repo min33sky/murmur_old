@@ -4,7 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import reducer from '../reducers';
 
 /**
- * 스토어 생성 및 설정
+ * 스토어 설정 및 생성하는 함수
  */
 const configureStore = () => {
   const middlewares = [];
@@ -17,7 +17,9 @@ const configureStore = () => {
   return store;
 };
 
-// NEXT에서 Redux 설정하기
+/*
+ * Next에서 Redux 설정하기
+ */
 const wrapper = createWrapper(configureStore, {
   debug: process.env.NODE_ENV === 'development',
 });

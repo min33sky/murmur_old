@@ -1,8 +1,11 @@
 import { combineReducers } from 'redux';
 import { HYDRATE } from 'next-redux-wrapper';
-import userReducer from './user';
-import postReducer from './post';
+import user from './user';
+import post from './post';
 
+/*
+ * combineReducers : 리듀서들을 하나로 합쳐주는 함수
+ */
 const rootReducer = combineReducers({
   index: (state = {}, action) => {
     switch (action.type) {
@@ -20,8 +23,8 @@ const rootReducer = combineReducers({
         return state;
     }
   },
-  user: userReducer,
-  post: postReducer,
+  user,
+  post,
 });
 
 export default rootReducer;
