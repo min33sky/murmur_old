@@ -1,6 +1,6 @@
 import React from 'react';
 import AppLayout from '../components/AppLayout';
-import NicknameEditFrom from '../components/NicknameEditFrom';
+import NicknameEditFrom from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
 import { Typography } from 'antd';
 const { Title, Paragraph } = Typography;
