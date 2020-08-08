@@ -1,5 +1,11 @@
+/**
+ * 액션 타입
+ */
 const ADD_POST = 'post/ADD_POST';
 
+/**
+ * 게시글 추가 액션
+ */
 export const addPostAction = () => ({
   type: ADD_POST,
   payload: {
@@ -14,6 +20,10 @@ export const addPostAction = () => ({
 });
 
 const initialState = {
+  /*
+    ? 속성 값이 대문자로 시작하는 경우는
+    ? 백엔드의 Sequelize의 특성 때문이다.
+   */
   mainPosts: [
     {
       id: 1,
