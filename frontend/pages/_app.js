@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import 'antd/dist/antd.css';
 import wrapper from '../store/configureStore';
+import 'antd/dist/antd.css'; // antd css file
 
 /**
  * NEXT의 시작 컴포넌트
