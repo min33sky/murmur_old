@@ -4,10 +4,11 @@ Can U Hear Me?
 
 ## Frontend
 
-- React
-- Next
-- Antd
-- StyledComponents
+- react
+- next
+- antd
+- styledComponents
+- react-slick
 
 ## Backend
 

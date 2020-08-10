@@ -22,12 +22,12 @@ function PostImages({ images }) {
     return (
       <>
         <img
-          role='presentation' // 스크린리더 사용 시 굳이 클릭할 필요 없다는 걸 알려준다
+          role='presentation' // ? 스크린리더 사용 시 굳이 클릭할 필요 없다는 걸 알려준다
           src={images[0].src}
           alt={images[0].src}
           onClick={onZoom}
         />
-        {showImageZoom && <ImagesZoom image={images} onClose={onClose} />}
+        {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     );
   } else if (images.length === 2) {
@@ -53,7 +53,7 @@ function PostImages({ images }) {
           alt={images[1].src}
           onClick={onZoom}
         />
-        {showImageZoom && <ImagesZoom image={images} onClose={onClose} />}
+        {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     );
   }
@@ -83,7 +83,7 @@ function PostImages({ images }) {
           개의 사진 더보기
         </div>
       </div>
-      {showImageZoom && <ImagesZoom image={images} onClose={onClose} />}
+      {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
     </>
   );
 }

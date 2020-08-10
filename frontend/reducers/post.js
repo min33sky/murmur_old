@@ -1,11 +1,11 @@
-/**
+/******************************************
  * 액션 타입
- */
+ ******************************************/
 const ADD_POST = 'post/ADD_POST';
 
-/**
- * 게시글 추가 액션
- */
+/******************************************
+ * 액션 함수
+ ******************************************/
 export const addPostAction = () => ({
   type: ADD_POST,
   payload: {
@@ -19,6 +19,9 @@ export const addPostAction = () => ({
   },
 });
 
+/******************************************
+ * 초기 상태 및 리듀서 함수
+ ******************************************/
 const initialState = {
   /*
     ? 속성 값이 대문자로 시작하는 경우는
@@ -71,6 +74,7 @@ const reducer = (state = initialState, action) => {
     case ADD_POST:
       return {
         ...state,
+        // 최신 글이 제일 앞에 위치한다.
         mainPosts: [action.payload, ...state.mainPosts],
       };
 
