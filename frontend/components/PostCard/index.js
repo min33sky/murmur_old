@@ -11,6 +11,7 @@ import {
 import { useSelector } from 'react-redux';
 import PostImages from '../PostImages';
 import CommentForm from '../CommentForm';
+import PostCardContent from '../PostCardContent';
 
 /**
  * 글 내용을 보여줄 카드
@@ -71,7 +72,7 @@ function PostCard({ post }) {
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
           title={post.User.nickname}
-          description={post.content}
+          description={<PostCardContent content={post.content} />}
         />
       </Card>
 
