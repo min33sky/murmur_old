@@ -1,28 +1,30 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPostAction } from '../../reducers/post';
+import { addPostRequestAction } from '../../reducers/post';
 const { TextArea } = Input;
 
 /**
- * 글 등록 폼
+ * 게시물 등록 폼
  */
 function PostForm() {
-  const [text, setText] = useState('');
-  // 등록 할 이미지 주소
-  const { imagePaths } = useSelector((state) => state.post);
-  // 이미지 등록 버튼을 위한 ref
-  const imageInput = useRef();
   const dispatch = useDispatch();
+  const imageInput = useRef(); // ? 이미지 등록 버튼 클릭을 위한 ref
+  const [text, setText] = useState('');
+  const { imagePaths } = useSelector((state) => state.post); // 등록 할 이미지의 주소
 
   const onSubmit = useCallback(() => {
-    dispatch(addPostAction());
+    dispatch(addPostRequestAction());
   }, [dispatch]);
 
   const onChangeText = useCallback((e) => {
     setText(e.target.value);
   }, []);
 
+  /**
+   * 이미지 등록 버튼 이벤트 리스너
+   * ? ref를 클릭해서 이미지를 등록시킨다.
+   */
   const onImageButtonClick = useCallback(() => {
     imageInput.current.click();
   }, []);
@@ -39,6 +41,7 @@ function PostForm() {
         maxLength={140}
         placeholder='당신의 글을 입력하세요'
       />
+
       <div>
         <input type='file' multiple hidden ref={imageInput} />
         <Button onClick={onImageButtonClick}>이미지 업로드</Button>
@@ -46,6 +49,7 @@ function PostForm() {
           등록
         </Button>
       </div>
+
       <div>
         {imagePaths.map((imagePath) => (
           <div key={imagePath} style={{ display: 'inline-block' }}>

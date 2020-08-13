@@ -50,7 +50,7 @@ const reducer = (state = initialState, action) => {
         isLoggedIn: true,
         me: {
           ...action.payload,
-          nickname: '하하호호',
+          nickname: '닉네임이 들어갈 곳',
         },
       };
 

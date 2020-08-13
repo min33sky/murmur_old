@@ -1,13 +1,15 @@
 /******************************************
  * 액션 타입
  ******************************************/
-const ADD_POST = 'post/ADD_POST';
+export const ADD_POST_REQUEST = 'post/ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'post/ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'post/ADD_POST_FAILURE';
 
 /******************************************
  * 액션 함수
  ******************************************/
-export const addPostAction = () => ({
-  type: ADD_POST,
+export const addPostRequestAction = () => ({
+  type: ADD_POST_REQUEST,
   payload: {
     id: 2,
     User: {
@@ -71,11 +73,21 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_POST:
+    case ADD_POST_REQUEST:
+      return {
+        ...state,
+      };
+
+    case ADD_POST_SUCCESS:
       return {
         ...state,
         // 최신 글이 제일 앞에 위치한다.
         mainPosts: [action.payload, ...state.mainPosts],
+      };
+
+    case ADD_POST_FAILURE:
+      return {
+        ...state,
       };
 
     default:
