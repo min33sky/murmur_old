@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
  * 시작 페이지
  */
 const Home = () => {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { loginDone } = useSelector((state) => state.user);
   const { mainPosts } = useSelector((state) => state.post);
 
   /*
@@ -17,7 +17,7 @@ const Home = () => {
 
   return (
     <AppLayout>
-      {isLoggedIn && <PostForm />}
+      {loginDone && <PostForm />}
       {mainPosts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

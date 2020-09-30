@@ -21,14 +21,23 @@ export const logoutRequestAction = () => ({
   type: LOG_OUT_REQUEST,
 });
 
+// ! 더미 함수
+const dummyUser = (data) => ({
+  ...data,
+  nickname: '닉네임이 들어갈 곳',
+});
+
 /****************************************************
  * State & Reducer Function
  ****************************************************/
 
 const initialState = {
-  isLoggingIn: false, // 로그인 요청 여부
-  isLoggedIn: false, // 로그인 여부
-  isLoggingOut: false, // 로그아웃 요청 여부
+  loginLoading: false, // 로그인 요청 여부
+  loginDone: false, // 로그인 여부
+  loginError: null,
+  logoutLoading: false, // 로그아웃 요청 여부
+  logoutDone: false,
+  logoutError: null,
   me: null, // 로그인 한 사용자 정보
   signedUpData: {}, // 가입 요청 데이터
   loginData: [], // 로그인 요청 데이터
@@ -39,46 +48,45 @@ const reducer = (state = initialState, action) => {
     case LOG_IN_REQUEST:
       return {
         ...state,
-        isLoggingIn: true,
-        isLoggedIn: false,
+        loginLoading: true,
+        loginDone: false,
       };
 
     case LOG_IN_SUCCESS:
       return {
         ...state,
-        isLoggingIn: false,
-        isLoggedIn: true,
-        me: {
-          ...action.payload,
-          nickname: '닉네임이 들어갈 곳',
-        },
+        loginLoading: false,
+        loginDone: true,
+        me: dummyUser(action.payload),
       };
 
     case LOG_IN_FAILURE:
       return {
         ...state,
-        isLoggingIn: false,
-        isLoggedIn: false,
-        me: null,
+        loginLoading: false,
+        loginDone: false,
+        loginError: action.payload,
       };
 
     case LOG_OUT_REQUEST:
       return {
         ...state,
-        isLoggingOut: true,
+        logoutLoading: true,
       };
 
     case LOG_OUT_SUCCESS:
       return {
         ...state,
-        isLoggingOut: false,
-        isLoggedIn: false,
+        logoutLoading: false,
+        logoutDone: true,
+        loginDone: false,
         me: null,
       };
 
     case LOG_OUT_FAILURE:
       return {
         ...state,
+        logoutError: action.payload,
       };
 
     default:

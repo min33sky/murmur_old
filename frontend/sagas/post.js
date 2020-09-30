@@ -27,6 +27,11 @@ function* addPost(action) {
 }
 
 function* watchAddPost() {
+  /*
+   ? takeLatest:
+   ! 요청이 취소되는 것이 아니라 응답이 취소되는 것이다.
+   ! 그래서 같은 요청인지 체크를 서버에서 해줘야 한다.
+   */
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 

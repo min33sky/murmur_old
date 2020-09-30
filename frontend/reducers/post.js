@@ -4,6 +4,9 @@
 export const ADD_POST_REQUEST = 'post/ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'post/ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'post/ADD_POST_FAILURE';
+export const ADD_COMMENT_REQUEST = 'post/ADD_COMMENT_REQUEST';
+export const ADD_COMMENT_SUCCESS = 'post/ADD_COMMENT_SUCCESS';
+export const ADD_COMMENT_FAILURE = 'post/ADD_COMMENT_FAILURE';
 
 /******************************************
  * 액션 함수
@@ -19,6 +22,11 @@ export const addPostRequestAction = () => ({
     Images: [],
     Comments: [],
   },
+});
+
+export const addCommentRequestAction = () => ({
+  type: ADD_COMMENT_REQUEST,
+  // TODO: 더미 데이터 추가
 });
 
 /******************************************
@@ -68,7 +76,12 @@ const initialState = {
     },
   ],
   imagePaths: [], // 업로드 할 이미지 주소
-  postAdded: false,
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -76,16 +89,38 @@ const reducer = (state = initialState, action) => {
     case ADD_POST_REQUEST:
       return {
         ...state,
+        addPostLoading: true,
+        addPostDone: false,
       };
 
     case ADD_POST_SUCCESS:
       return {
         ...state,
-        // 최신 글이 제일 앞에 위치한다.
+        // * 최신 글이 제일 앞에 위치한다.
         mainPosts: [action.payload, ...state.mainPosts],
+        addPostLoading: false,
+        addPostDone: true,
       };
 
     case ADD_POST_FAILURE:
+      return {
+        ...state,
+        addPostLoading: false,
+        addPostError: action.payload,
+      };
+
+    // TODO: 댓글 처리
+    case ADD_COMMENT_REQUEST:
+      return {
+        ...state,
+      };
+
+    case ADD_COMMENT_SUCCESS:
+      return {
+        ...state,
+      };
+
+    case ADD_COMMENT_FAILURE:
       return {
         ...state,
       };

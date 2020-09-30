@@ -21,6 +21,7 @@ function* login(action) {
   try {
     // let response = yield call(loginApi, action.payload);
 
+    console.log('Login Saga');
     yield delay(1000);
 
     yield put({
