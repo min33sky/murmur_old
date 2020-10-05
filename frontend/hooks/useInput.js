@@ -8,5 +8,5 @@ export default (defaultValue = null) => {
   const handler = (e) => {
     setValue(e.target.value);
   };
-  return [value, handler];
+  return [value, handler, setValue];
 };

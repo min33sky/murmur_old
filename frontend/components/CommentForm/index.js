@@ -1,18 +1,36 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import useInput from '../../hooks/useInput';
 import { Form, Input, Button } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import useInput from '../../hooks/useInput';
+import { addCommentRequestAction } from '../../reducers/post';
 
 /**
  * 댓글 등록 폼
  * @param {number} id 게시글 ID
  */
-function CommentForm({ id }) {
-  const [commentText, onChangeCommentText] = useInput('');
+function CommentForm({ post }) {
+  const id = useSelector((state) => state.user.me?.id);
+  const { addCommentDone } = useSelector((state) => state.post);
+  const dispatch = useDispatch();
+  const [commentText, onChangeCommentText, setCommentText] = useInput('');
+
+  useEffect(() => {
+    if (addCommentDone) {
+      setCommentText('');
+    }
+  }, [addCommentDone]);
 
   const onSubmitComment = useCallback(() => {
     console.log(id, commentText);
-  }, [commentText]);
+    dispatch(
+      addCommentRequestAction({
+        content: commentText,
+        postId: post.id,
+        userId: id,
+      }),
+    );
+  }, [commentText, id]);
 
   return (
     <Form onFinish={onSubmitComment}>
@@ -23,7 +41,12 @@ function CommentForm({ id }) {
           rows={4}
         />
         <Button
-          style={{ position: 'absolute', right: 0, bottom: -40 }}
+          style={{
+            position: 'absolute',
+            right: 0,
+            bottom: -40,
+            zIndex: 1,
+          }}
           htmlType='submit'
           type='primary'
         >

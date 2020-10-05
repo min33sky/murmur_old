@@ -18,9 +18,9 @@ const FormWrapper = styled(Form)`
  * 로그인 컴포넌트
  */
 const LoginForm = () => {
-  const [id, onChangeId] = useInput('');
+  const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
-  const { isLoggingIn } = useSelector((state) => state.user);
+  const { loginLoading } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -28,21 +28,21 @@ const LoginForm = () => {
     ? onFinish()에는 e.defaultPrevent()가 자동 호출된다.
   */
   const onSubmitForm = useCallback(() => {
-    console.log(id, password);
-    dispatch(loginRequestAction({ id, password }));
-  }, [id, password]);
+    console.log(email, password);
+    dispatch(loginRequestAction({ email, password }));
+  }, [email, password]);
 
   return (
     <FormWrapper onFinish={onSubmitForm}>
       <div>
-        <label htmlFor='user-id'>아이디</label>
+        <label htmlFor='user-email'>이메일</label>
         <br />
         <Input
           type='text'
-          id='user-id'
-          value={id}
-          onChange={onChangeId}
-        ></Input>
+          id='user-email'
+          value={email}
+          onChange={onChangeEmail}
+        />
       </div>
       <div>
         <label htmlFor='password'>패스워드</label>
@@ -52,11 +52,11 @@ const LoginForm = () => {
           id='password'
           value={password}
           onChange={onChangePassword}
-        ></Input>
+        />
       </div>
 
       <ButtonWrapper>
-        <Button type='primary' htmlType='submit' loading={isLoggingIn}>
+        <Button type='primary' htmlType='submit' loading={loginLoading}>
           로그인
         </Button>
         <Link href='/signup'>

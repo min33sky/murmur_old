@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { addPostRequestAction } from '../../reducers/post';
+import useInput from '../../hooks/useInput';
 const { TextArea } = Input;
 
 /**
@@ -10,16 +11,25 @@ const { TextArea } = Input;
 function PostForm() {
   const dispatch = useDispatch();
   const imageInput = useRef(); // ? 이미지 등록 버튼 클릭을 위한 ref
-  const [text, setText] = useState('');
-  const { imagePaths } = useSelector((state) => state.post); // 등록 할 이미지의 주소
+  const [text, onChangeText, setText] = useInput('');
+  const { imagePaths, addPostDone } = useSelector((state) => state.post); // 등록 할 이미지의 주소
+  const { me } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (addPostDone) setText('');
+  }, [addPostDone]);
 
   const onSubmit = useCallback(() => {
-    dispatch(addPostRequestAction());
-  }, [dispatch]);
-
-  const onChangeText = useCallback((e) => {
-    setText(e.target.value);
-  }, []);
+    dispatch(
+      addPostRequestAction({
+        User: {
+          id: me.id,
+          nickname: me.nickname,
+        },
+        content: text,
+      }),
+    );
+  }, [dispatch, text]);
 
   /**
    * 이미지 등록 버튼 이벤트 리스너

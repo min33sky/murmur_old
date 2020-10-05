@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
  * @param {React.ReactNode} children 레이아웃을 적용 할 컴포넌트
  */
 const AppLayout = ({ children }) => {
-  const { loginDone } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
 
   return (
     <>
@@ -19,7 +19,7 @@ const AppLayout = ({ children }) => {
 
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {loginDone ? <UserProfile /> : <LoginForm />}
+          {me ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12} style={{ padding: '10px 10px' }}>
           {children}
