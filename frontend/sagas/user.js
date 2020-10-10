@@ -30,7 +30,7 @@ function* login(action) {
       // payload: response.data,
       payload: {
         ...action.payload,
-        id: shortid.generate(),
+        id: 1,
       },
     });
   } catch (error) {

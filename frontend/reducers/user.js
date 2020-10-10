@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import produce from 'immer';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from './post';
 
 /** **************************************************
@@ -67,88 +68,68 @@ const initialState = {
   loginData: [], // 로그인 요청 데이터
 };
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOG_IN_REQUEST:
-      return {
-        ...state,
-        loginLoading: true,
-        loginDone: false,
-      };
+// TODO: 닉네임 수정도 만들자
 
-    case LOG_IN_SUCCESS:
-      return {
-        ...state,
-        loginLoading: false,
-        loginDone: true,
-        me: dummyUser(action.payload),
-      };
+const reducer = (state = initialState, action) =>
+  produce(state, (draft) => {
+    switch (action.type) {
+      case LOG_IN_REQUEST:
+        draft.loginLoading = true;
+        draft.loginDone = false;
+        draft.loginError = null;
+        break;
 
-    case LOG_IN_FAILURE:
-      return {
-        ...state,
-        loginLoading: false,
-        loginDone: false,
-        loginError: action.payload,
-      };
+      case LOG_IN_SUCCESS:
+        draft.loginLoading = false;
+        draft.loginDone = true;
+        draft.me = dummyUser(action.payload);
+        break;
 
-    case LOG_OUT_REQUEST:
-      return {
-        ...state,
-        logoutLoading: true,
-        logoutDone: false,
-      };
+      case LOG_IN_FAILURE:
+        draft.loginLoading = false;
+        draft.loginDone = false;
+        draft.loginError = action.payload;
+        break;
 
-    case LOG_OUT_SUCCESS:
-      return {
-        ...state,
-        logoutLoading: false,
-        logoutDone: true,
-        me: null,
-      };
+      case LOG_OUT_REQUEST:
+        draft.logoutLoading = true;
+        draft.logoutDone = false;
+        draft.logoutError = null;
+        break;
 
-    case LOG_OUT_FAILURE:
-      return {
-        ...state,
-        logoutLoading: false,
-        logoutDone: false,
-        logoutError: action.payload,
-      };
+      case LOG_OUT_SUCCESS:
+        draft.logoutLoading = false;
+        draft.logoutDone = true;
+        draft.me = null;
+        break;
 
-    case SIGN_UP_REQUEST:
-      return state;
-    case SIGN_UP_SUCCESS:
-      return state;
-    case SIGN_UP_FAILURE:
-      return state;
+      case LOG_OUT_FAILURE:
+        draft.logoutLoading = false;
+        draft.logoutError = action.payload;
+        break;
 
-    case ADD_POST_TO_ME: {
-      const posts = [action.payload, ...state.me.Posts];
-      return {
-        ...state,
-        me: {
-          ...state.me,
-          Posts: posts,
-        },
-      };
+      case SIGN_UP_REQUEST:
+        return state;
+      case SIGN_UP_SUCCESS:
+        return state;
+      case SIGN_UP_FAILURE:
+        return state;
+
+      // POST 리듀서에서 나오는 액션 처리
+
+      case ADD_POST_TO_ME:
+        draft.me.Posts.unshift({ id: action.payload });
+        break;
+
+      case REMOVE_POST_OF_ME:
+        draft.me.Posts = draft.me.Posts.filter(
+          (post) => post.id !== action.payload,
+        );
+        break;
+
+      default:
+        break;
     }
-
-    case REMOVE_POST_OF_ME: {
-      console.log('페이로드', action.payload);
-      const posts = state.me.Posts.filter((post) => post.id !== action.payload);
-
-      return {
-        ...state,
-        me: {
-          ...state.me,
-          Posts: posts,
-        },
-      };
-    }
-
-    default:
-      return state;
-  }
-};
+  });
 
 export default reducer;

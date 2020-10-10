@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Link from 'next/link';
-import useInput from '../../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
+import useInput from '../../hooks/useInput';
 import { loginRequestAction } from '../../reducers/user';
 
 const ButtonWrapper = styled.div`
@@ -28,7 +28,6 @@ const LoginForm = () => {
     ? onFinish()에는 e.defaultPrevent()가 자동 호출된다.
   */
   const onSubmitForm = useCallback(() => {
-    console.log(email, password);
     dispatch(loginRequestAction({ email, password }));
   }, [email, password]);
 

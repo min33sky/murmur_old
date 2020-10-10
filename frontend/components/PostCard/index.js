@@ -35,7 +35,6 @@ function PostCard({ post }) {
   }, []);
 
   const onRemovePost = useCallback(() => {
-    // TODO : 게시물 삭제 액션 디스패치
     dispatch(removePostRequestAction(post.id));
   }, []);
 

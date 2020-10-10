@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import produce from 'immer';
 
 /** ****************************************
  * 액션 타입
@@ -38,7 +39,12 @@ export const removePostRequestAction = (postId) => ({
 });
 
 const dummyPost = (data) => ({
-  ...data,
+  id: data.id,
+  content: data.content,
+  User: {
+    id: 1,
+    nickname: 'messi',
+  },
   Images: [],
   Comments: [],
 });
@@ -115,99 +121,74 @@ const initialState = {
   removePostError: null,
 };
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_POST_REQUEST:
-      return {
-        ...state,
-        addPostLoading: true,
-        addPostDone: false,
-      };
+const reducer = (state = initialState, action) =>
+  produce(state, (draft) => {
+    switch (action.type) {
+      // 게시물 관련
 
-    case ADD_POST_SUCCESS:
-      return {
-        ...state,
-        // * 최신 글이 제일 앞에 위치한다.
-        mainPosts: [dummyPost(action.payload), ...state.mainPosts],
-        addPostLoading: false,
-        addPostDone: true,
-      };
+      case ADD_POST_REQUEST:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
 
-    case ADD_POST_FAILURE:
-      return {
-        ...state,
-        addPostLoading: false,
-        addPostError: action.payload,
-      };
+      case ADD_POST_SUCCESS:
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.mainPosts.unshift(dummyPost(action.payload));
+        break;
 
-    // TODO: 댓글 처리
-    case ADD_COMMENT_REQUEST:
-      return {
-        ...state,
-        addCommentLoading: true,
-        addCommentDone: false,
-      };
+      case ADD_POST_FAILURE:
+        draft.addPostLoading = false;
+        draft.addPostError = action.payload;
+        break;
 
-    case ADD_COMMENT_SUCCESS: {
-      // 해당 글의 id를 찾고 comments에 응답 결과를 넣어준다.
-      // content, postId, userId
+      case REMOVE_POST_REQUEST:
+        draft.removePostLoading = true;
+        draft.removePostDone = false;
+        draft.removePostError = null;
+        break;
 
-      const postIndex = state.mainPosts.findIndex(
-        (element) => element.id === action.payload.postId,
-      );
+      case REMOVE_POST_SUCCESS: {
+        // ? immer를 사용하면 불변성을 지킬 필요는 없지만 filter 쓰는게 편하다. (immer 의도로는 splice가 맞다)
+        draft.mainPosts = draft.mainPosts.filter(
+          (post) => post.id !== action.payload,
+        );
+        draft.removePostLoading = false;
+        draft.removePostDone = true;
+        break;
+      }
 
-      const post = { ...state.mainPosts[postIndex] };
-      post.Comments = [dummyComment(action.payload.content), ...post.Comments];
+      case REMOVE_POST_FAILURE:
+        draft.removePostLoading = false;
+        draft.removePostError = action.payload;
+        break;
 
-      const mainPosts = [...state.mainPosts];
+      // 댓글 관련
 
-      mainPosts[postIndex] = post;
+      case ADD_COMMENT_REQUEST:
+        draft.addCommentLoading = true;
+        draft.addCommentDone = false;
+        break;
 
-      return {
-        ...state,
-        mainPosts,
-        addCommentLoading: false,
-        addCommentDone: true,
-      };
+      case ADD_COMMENT_SUCCESS: {
+        const post = draft.mainPosts.find(
+          (v) => v.id === action.payload.postId,
+        );
+        post.Comments.unshift(dummyComment(action.payload.content));
+        draft.addCommentLoading = false;
+        draft.addCommentDone = true;
+        break;
+      }
+
+      case ADD_COMMENT_FAILURE:
+        draft.addCommentLoading = false;
+        draft.addPostError = action.payload;
+        break;
+
+      default:
+        break;
     }
-
-    case ADD_COMMENT_FAILURE:
-      return {
-        ...state,
-        addCommentLoading: false,
-        addCommentError: action.payload,
-      };
-
-    case REMOVE_POST_REQUEST:
-      return {
-        ...state,
-        removePostLoading: true,
-        removePostDone: false,
-      };
-
-    case REMOVE_POST_SUCCESS: {
-      const posts = state.mainPosts.filter(
-        (post) => post.id !== action.payload,
-      );
-
-      return {
-        ...state,
-        removePostLoading: false,
-        removePostDone: true,
-        mainPosts: posts,
-      };
-    }
-
-    case REMOVE_POST_FAILURE:
-      return {
-        ...state,
-        removePostLoading: false,
-        removePostError: action.payload,
-      };
-
-    default:
-      return state;
-  }
-};
+  });
 
 export default reducer;

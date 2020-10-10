@@ -30,7 +30,8 @@ function PostImages({ images }) {
         {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     );
-  } else if (images.length === 2) {
+  }
+  if (images.length === 2) {
     return (
       <>
         <img
@@ -89,7 +90,7 @@ function PostImages({ images }) {
 }
 
 PostImages.propTypes = {
-  images: PropTypes.array,
+  images: PropTypes.array.isRequired,
 };
 
 export default PostImages;

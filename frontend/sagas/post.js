@@ -34,17 +34,14 @@ function* addPost(action) {
       // payload: response.data
       payload: {
         id: randomId,
-        ...action.payload,
+        content: action.payload,
       },
     });
 
     // User Reducer도 업데이트
     yield put({
       type: ADD_POST_TO_ME,
-      payload: {
-        id: randomId,
-        ...action.payload,
-      },
+      payload: randomId,
     });
   } catch (error) {
     yield put({

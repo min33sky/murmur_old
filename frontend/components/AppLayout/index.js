@@ -1,10 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
 import LoginForm from '../LoginForm';
 import UserProfile from '../UserProfile';
 import Header from './Header';
-import { useSelector } from 'react-redux';
 
 /**
  * 전반적인 레이아웃을 담당하는 컴포넌트
