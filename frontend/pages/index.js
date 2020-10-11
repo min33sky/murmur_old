@@ -1,23 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
-import { useSelector } from 'react-redux';
+import { LOAD_POSTS_REQUEST } from '../reducers/post';
 
 /**
  * 시작 페이지
  */
 const Home = () => {
-  const { loginDone } = useSelector((state) => state.user);
-  const { mainPosts } = useSelector((state) => state.post);
+  const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+    (state) => state.post,
+  );
 
-  /*
-   * 로그인 정보와 게시글들을 모두 가져와서 보여준다.
-   */
+  // Load Posts.
+  useEffect(() => {
+    dispatch({
+      type: LOAD_POSTS_REQUEST,
+    });
+  }, []);
+
+  // Infinity Scrolling
+  useEffect(() => {
+    function onScroll() {
+      if (
+        window.scrollY + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        if (hasMorePosts && !loadPostsLoading) {
+          dispatch({
+            type: LOAD_POSTS_REQUEST,
+          });
+        }
+      }
+    }
+
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [hasMorePosts, loadPostsLoading]);
 
   return (
     <AppLayout>
-      {loginDone && <PostForm />}
+      {me && <PostForm />}
       {mainPosts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

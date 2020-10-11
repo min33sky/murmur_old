@@ -1,15 +1,18 @@
 import shortid from 'shortid';
 import produce from 'immer';
+import faker from 'faker';
 
-/** ****************************************
- * 액션 타입
- ***************************************** */
+// Action Type
 export const ADD_POST_REQUEST = 'post/ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'post/ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'post/ADD_POST_FAILURE';
 export const ADD_COMMENT_REQUEST = 'post/ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'post/ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'post/ADD_COMMENT_FAILURE';
+
+export const LOAD_POSTS_REQUEST = 'post/LOAD_POSTS_REQUEST';
+export const LOAD_POSTS_SUCCESS = 'post/LOAD_POSTS_SUCCESS';
+export const LOAD_POSTS_FAILURE = 'post/LOAD_POSTS_FAILURE';
 
 export const REMOVE_POST_REQUEST = 'post/REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'post/REMOVE_POST_SUCCESS';
@@ -20,9 +23,7 @@ export const REMOVE_POST_FAILURE = 'post/REMOVE_POST_FAILURE';
 export const ADD_POST_TO_ME = 'post/ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'post/REMOVE_POST_OF_ME';
 
-/** ****************************************
- * 액션 함수
- ***************************************** */
+// Action Function
 export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
   payload: data,
@@ -59,60 +60,17 @@ const dummyComment = (data) => ({
   content: data,
 });
 
-/** ****************************************
- * 초기 상태 및 리듀서 함수
- ***************************************** */
+// 초기 상태
 const initialState = {
-  /*
-    ? 속성 값이 대문자로 시작하는 경우는
-    ? 백엔드의 Sequelize의 특성 때문이다.
-   */
-  mainPosts: [
-    {
-      id: shortid.generate(),
-      User: {
-        id: shortid.generate(),
-        nickname: 'messi',
-      },
-      content: '첫 번째 게시글 #첫번째 #일빠',
-      Images: [
-        {
-          id: shortid.generate(),
-          src:
-            'https://i.pinimg.com/236x/d9/82/f4/d982f4ec7d06f6910539472634e1f9b1.jpg',
-        },
-        {
-          id: shortid.generate(),
-          src:
-            'https://i.pinimg.com/originals/05/1f/f3/051ff3fb781ff83c9b0f8a32f9922fa6.png',
-        },
-        // {
-        //   src:
-        //     'https://i.pinimg.com/originals/05/1f/f3/051ff3fb781ff83c9b0f8a32f9922fa6.png',
-        // },
-      ],
-      Comments: [
-        {
-          id: shortid.generate(),
-          User: {
-            nickname: 'ronaldo',
-          },
-          content: '1등',
-        },
-        {
-          id: shortid.generate(),
-          User: {
-            nickname: 'neymar',
-          },
-          content: '2등',
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [], // 업로드 할 이미지 주소
+  hasMorePosts: true, // 불러올 게시물이 더 있는지 체크
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -121,10 +79,60 @@ const initialState = {
   removePostError: null,
 };
 
+/*
+  * 게시물 더미 데이터 생성 함수
+  ? 속성 값이 대문자로 시작하는 경우는
+  ? 백엔드의 Sequelize의 특성 때문이다.
+ */
+export const generateDummyPost = (number) =>
+  Array(number)
+    .fill()
+    .map(() => ({
+      id: shortid.generate(),
+      User: {
+        id: shortid.generate(),
+        nickname: faker.name.findName(),
+      },
+      content: faker.lorem.paragraph(),
+      Images: [
+        {
+          id: shortid.generate(),
+          src: faker.image.image(),
+        },
+      ],
+      Comments: [
+        {
+          id: shortid.generate(),
+          User: {
+            nickname: faker.name.findName(),
+          },
+          content: faker.lorem.sentence(),
+        },
+      ],
+    }));
+
+// Post Reducer
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       // 게시물 관련
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+        break;
+
+      case LOAD_POSTS_SUCCESS:
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        draft.mainPosts = action.payload.concat(draft.mainPosts);
+        draft.hasMorePosts = draft.mainPosts.length < 50; // 50개로 제한
+        break;
+
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.payload;
+        break;
 
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
