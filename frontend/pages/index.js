@@ -11,11 +11,9 @@ import { LOAD_POSTS_REQUEST } from '../reducers/post';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post,
-  );
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
 
-  // Load Posts.
+  // Load Posts
   useEffect(() => {
     dispatch({
       type: LOAD_POSTS_REQUEST,
@@ -40,6 +38,7 @@ const Home = () => {
     window.addEventListener('scroll', onScroll);
 
     return () => {
+      //! 메모리 관리를 위해 추가한 이벤트를 제거
       window.removeEventListener('scroll', onScroll);
     };
   }, [hasMorePosts, loadPostsLoading]);

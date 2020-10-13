@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import AppLayout from '../components/AppLayout';
-import { Form, Input, Button, Checkbox } from 'antd';
-import useInput from '../hooks/useInput';
+import { Form, Input, Button, Checkbox, Typography } from 'antd';
 import styled from 'styled-components';
-import { Typography } from 'antd';
+
 import { useDispatch, useSelector } from 'react-redux';
+import useInput from '../hooks/useInput';
+import AppLayout from '../components/AppLayout';
 import { signupRequestAction } from '../reducers/user';
+
 const { Title, Paragraph } = Typography;
 
 const ErrorMessage = styled.div`
@@ -43,10 +44,9 @@ const Signup = () => {
   }, []);
 
   const onSumbit = useCallback(() => {
-    // ! 한번 더 입력에 대한 체크를 해준다.
+    //! 한번 더 입력에 대한 체크를 해준다.
     if (password !== passwordCheck) return setPasswordError(true);
     if (!term) return setTermError(true);
-    console.log(email, password, nickname);
     dispatch(signupRequestAction({ email, password, nickname }));
   }, [password, passwordCheck, term, email]);
 
@@ -61,37 +61,19 @@ const Signup = () => {
         <div>
           <label htmlFor='user-email'>이메일</label>
           <br />
-          <Input
-            type='email'
-            id='user-email'
-            value={email}
-            onChange={onChangeEmail}
-            required
-          />
+          <Input type='email' id='user-email' value={email} onChange={onChangeEmail} required />
         </div>
 
         <div>
           <label htmlFor='nickname'>닉네임</label>
           <br />
-          <Input
-            type='text'
-            id='nickname'
-            value={nickname}
-            onChange={onChangeNickname}
-            required
-          />
+          <Input type='text' id='nickname' value={nickname} onChange={onChangeNickname} required />
         </div>
 
         <div>
           <label htmlFor='password'>패스워드</label>
           <br />
-          <Input
-            type='text'
-            id='password'
-            value={password}
-            onChange={onChangePassword}
-            required
-          />
+          <Input type='text' id='password' value={password} onChange={onChangePassword} required />
         </div>
 
         <div>
@@ -104,9 +86,7 @@ const Signup = () => {
             onChange={onChangePasswordCheck}
             required
           />
-          {passwordError && (
-            <ErrorMessage>패스워드가 일치하지 않습니다.</ErrorMessage>
-          )}
+          {passwordError && <ErrorMessage>패스워드가 일치하지 않습니다.</ErrorMessage>}
         </div>
 
         <div style={{ marginTop: '20px' }}>

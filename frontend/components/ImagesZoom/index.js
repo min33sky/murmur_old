@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Slider from 'react-slick';
 
-import {
-  CloseBtn,
-  Header,
-  Global,
-  SliderWrapper,
-  ImgWrapper,
-  Indicator,
-  Overlay,
-} from './styles';
+import { CloseBtn, Header, Global, SliderWrapper, ImgWrapper, Indicator, Overlay } from './styles';
 
 /**
  * Image Carousel 컴포넌트

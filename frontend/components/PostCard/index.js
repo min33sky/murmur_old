@@ -13,6 +13,7 @@ import PostImages from '../PostImages';
 import CommentForm from '../CommentForm';
 import PostCardContent from '../PostCardContent';
 import { removePostRequestAction } from '../../reducers/post';
+import FollowButton from '../FollowButton';
 
 /**
  * 글 내용을 보여줄 카드
@@ -47,11 +48,7 @@ function PostCard({ post }) {
           <RetweetOutlined key='retweet' />,
 
           liked ? (
-            <HeartTwoTone
-              key='heart'
-              twoToneColor='red'
-              onClick={onToggleLikes}
-            />
+            <HeartTwoTone key='heart' twoToneColor='red' onClick={onToggleLikes} />
           ) : (
             <HeartOutlined key='heart' onClick={onToggleLikes} />
           ),
@@ -63,11 +60,7 @@ function PostCard({ post }) {
                 {id && id === post.User.id ? (
                   <>
                     <Button>수정</Button>
-                    <Button
-                      type='danger'
-                      onClick={onRemovePost}
-                      loading={removePostLoading}
-                    >
+                    <Button type='danger' onClick={onRemovePost} loading={removePostLoading}>
                       삭제
                     </Button>
                   </>
@@ -80,6 +73,7 @@ function PostCard({ post }) {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        extra={me && <FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}

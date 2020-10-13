@@ -18,6 +18,14 @@ export const SIGN_UP_REQUEST = 'user/SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'user/SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'user/SIGN_UP_FAILURE';
 
+export const FOLLOW_REQUEST = 'user/FOLLOW_REQUEST';
+export const FOLLOW_SUCCESS = 'user/FOLLOW_SUCCESS';
+export const FOLLOW_FAILURE = 'user/FOLLOW_FAILURE';
+
+export const UNFOLLOW_REQUEST = 'user/UNFOLLOW_REQUEST';
+export const UNFOLLOW_SUCCESS = 'user/UNFOLLOW_SUCCESS';
+export const UNFOLLOW_FAILURE = 'user/UNFOLLOW_FAILURE';
+
 /** **************************************************
  *
  * Action Function
@@ -38,6 +46,16 @@ export const signupRequestAction = (data) => ({
   payload: data,
 });
 
+export const followRequestAction = (userId) => ({
+  type: FOLLOW_REQUEST,
+  payload: userId,
+});
+
+export const unfollowRequestAction = (userId) => ({
+  type: UNFOLLOW_REQUEST,
+  payload: userId,
+});
+
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 더미 함수
 const dummyUser = (data) => ({
   ...data,
@@ -50,11 +68,9 @@ const dummyUser = (data) => ({
   nickname: '불건전한 닉네임',
 });
 
-/** **************************************************
- *
- * State & Reducer Function
- *
- *************************************************** */
+//----------------------------------------------------------------------------
+//* State & Reducer Function
+//----------------------------------------------------------------------------
 
 const initialState = {
   loginLoading: false, // 로그인 요청 여부
@@ -63,6 +79,8 @@ const initialState = {
   logoutLoading: false, // 로그아웃 요청 여부
   logoutDone: false,
   logoutError: null,
+  followLoding: false,
+  unfollowLoding: false,
   me: null, // 로그인 한 사용자 정보
   signedUpData: {}, // 가입 요청 데이터
   loginData: [], // 로그인 요청 데이터
@@ -115,6 +133,43 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_FAILURE:
         return state;
 
+      // Follow 관련
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push({ id: action.payload });
+        break;
+
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followDone = false;
+        draft.loginError = action.payload;
+        break;
+
+      case UNFOLLOW_REQUEST:
+        draft.unfollowLoading = true;
+        draft.unfollowDone = false;
+        draft.unfollowError = null;
+        break;
+
+      case UNFOLLOW_SUCCESS:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter((user) => user.id !== action.payload);
+        break;
+
+      case UNFOLLOW_FAILURE:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = false;
+        draft.loginError = action.payload;
+        break;
+
       // POST 리듀서에서 나오는 액션 처리
 
       case ADD_POST_TO_ME:
@@ -122,9 +177,7 @@ const reducer = (state = initialState, action) =>
         break;
 
       case REMOVE_POST_OF_ME:
-        draft.me.Posts = draft.me.Posts.filter(
-          (post) => post.id !== action.payload,
-        );
+        draft.me.Posts = draft.me.Posts.filter((post) => post.id !== action.payload);
         break;
 
       default:

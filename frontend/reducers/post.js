@@ -53,7 +53,7 @@ const dummyPost = (data) => ({
 const dummyComment = (data) => ({
   id: shortid.generate(),
   User: {
-    // !! messi의 id가 다르므로 문제가 생길 것이다.
+    //! messi의 id가 다르므로 문제가 생길 것이다.
     id: shortid.generate(),
     nickname: 'messi',
   },
@@ -159,9 +159,7 @@ const reducer = (state = initialState, action) =>
 
       case REMOVE_POST_SUCCESS: {
         // ? immer를 사용하면 불변성을 지킬 필요는 없지만 filter 쓰는게 편하다. (immer 의도로는 splice가 맞다)
-        draft.mainPosts = draft.mainPosts.filter(
-          (post) => post.id !== action.payload,
-        );
+        draft.mainPosts = draft.mainPosts.filter((post) => post.id !== action.payload);
         draft.removePostLoading = false;
         draft.removePostDone = true;
         break;
@@ -180,9 +178,7 @@ const reducer = (state = initialState, action) =>
         break;
 
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find(
-          (v) => v.id === action.payload.postId,
-        );
+        const post = draft.mainPosts.find((v) => v.id === action.payload.postId);
         post.Comments.unshift(dummyComment(action.payload.content));
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
