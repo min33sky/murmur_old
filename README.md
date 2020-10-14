@@ -14,4 +14,6 @@ Can U Hear Me?
 
 ## Backend
 
-- Express
+- express
+- mysql
+- sequelize
