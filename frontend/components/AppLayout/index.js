@@ -25,11 +25,7 @@ const AppLayout = ({ children }) => {
           {children}
         </Col>
         <Col xs={24} md={6}>
-          <a
-            href='https://github.com/min33sky'
-            target='_blank'
-            rel='noreferrer noopener'
-          >
+          <a href='https://github.com/min33sky' target='_blank' rel='noreferrer noopener'>
             By MingtypE
           </a>
         </Col>
