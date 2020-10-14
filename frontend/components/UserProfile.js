@@ -5,6 +5,7 @@ import { logoutRequestAction } from '../reducers/user';
 
 /**
  * 프로필 컴포넌트
+  : 로그인 시 보여주는 컴포넌트
  */
 function UserProfile() {
   const { me, logoutLoading } = useSelector((state) => state.user);
@@ -34,7 +35,7 @@ function UserProfile() {
         </div>,
       ]}
     >
-      <Card.Meta title={me.nickname} avatar={<Avatar>MIN</Avatar>}></Card.Meta>
+      <Card.Meta title={me.nickname} avatar={<Avatar>MIN</Avatar>} />
       <Button onClick={onLogout} loading={logoutLoading}>
         로그아웃
       </Button>

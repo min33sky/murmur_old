@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
 import LoginForm from '../LoginForm';
 import UserProfile from '../UserProfile';
@@ -25,11 +25,7 @@ const AppLayout = ({ children }) => {
           {children}
         </Col>
         <Col xs={24} md={6}>
-          <a
-            href='https://github.com/min33sky'
-            target='_blank'
-            rel='noreferrer noopener'
-          >
+          <a href='https://github.com/min33sky' target='_blank' rel='noreferrer noopener'>
             By MingtypE
           </a>
         </Col>

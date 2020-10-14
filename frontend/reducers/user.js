@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import produce from 'immer';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from './post';
 
 /** **************************************************
@@ -16,6 +17,14 @@ export const LOG_OUT_FAILURE = 'user/LOG_OUT_FAILURE';
 export const SIGN_UP_REQUEST = 'user/SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'user/SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'user/SIGN_UP_FAILURE';
+
+export const FOLLOW_REQUEST = 'user/FOLLOW_REQUEST';
+export const FOLLOW_SUCCESS = 'user/FOLLOW_SUCCESS';
+export const FOLLOW_FAILURE = 'user/FOLLOW_FAILURE';
+
+export const UNFOLLOW_REQUEST = 'user/UNFOLLOW_REQUEST';
+export const UNFOLLOW_SUCCESS = 'user/UNFOLLOW_SUCCESS';
+export const UNFOLLOW_FAILURE = 'user/UNFOLLOW_FAILURE';
 
 /** **************************************************
  *
@@ -37,6 +46,16 @@ export const signupRequestAction = (data) => ({
   payload: data,
 });
 
+export const followRequestAction = (userId) => ({
+  type: FOLLOW_REQUEST,
+  payload: userId,
+});
+
+export const unfollowRequestAction = (userId) => ({
+  type: UNFOLLOW_REQUEST,
+  payload: userId,
+});
+
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 더미 함수
 const dummyUser = (data) => ({
   ...data,
@@ -49,11 +68,9 @@ const dummyUser = (data) => ({
   nickname: '불건전한 닉네임',
 });
 
-/** **************************************************
- *
- * State & Reducer Function
- *
- *************************************************** */
+//----------------------------------------------------------------------------
+//* State & Reducer Function
+//----------------------------------------------------------------------------
 
 const initialState = {
   loginLoading: false, // 로그인 요청 여부
@@ -62,93 +79,110 @@ const initialState = {
   logoutLoading: false, // 로그아웃 요청 여부
   logoutDone: false,
   logoutError: null,
+  followLoding: false,
+  unfollowLoding: false,
   me: null, // 로그인 한 사용자 정보
   signedUpData: {}, // 가입 요청 데이터
   loginData: [], // 로그인 요청 데이터
 };
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOG_IN_REQUEST:
-      return {
-        ...state,
-        loginLoading: true,
-        loginDone: false,
-      };
+// TODO: 닉네임 수정도 만들자
 
-    case LOG_IN_SUCCESS:
-      return {
-        ...state,
-        loginLoading: false,
-        loginDone: true,
-        me: dummyUser(action.payload),
-      };
+const reducer = (state = initialState, action) =>
+  produce(state, (draft) => {
+    switch (action.type) {
+      case LOG_IN_REQUEST:
+        draft.loginLoading = true;
+        draft.loginDone = false;
+        draft.loginError = null;
+        break;
 
-    case LOG_IN_FAILURE:
-      return {
-        ...state,
-        loginLoading: false,
-        loginDone: false,
-        loginError: action.payload,
-      };
+      case LOG_IN_SUCCESS:
+        draft.loginLoading = false;
+        draft.loginDone = true;
+        draft.me = dummyUser(action.payload);
+        break;
 
-    case LOG_OUT_REQUEST:
-      return {
-        ...state,
-        logoutLoading: true,
-        logoutDone: false,
-      };
+      case LOG_IN_FAILURE:
+        draft.loginLoading = false;
+        draft.loginDone = false;
+        draft.loginError = action.payload;
+        break;
 
-    case LOG_OUT_SUCCESS:
-      return {
-        ...state,
-        logoutLoading: false,
-        logoutDone: true,
-        me: null,
-      };
+      case LOG_OUT_REQUEST:
+        draft.logoutLoading = true;
+        draft.logoutDone = false;
+        draft.logoutError = null;
+        break;
 
-    case LOG_OUT_FAILURE:
-      return {
-        ...state,
-        logoutLoading: false,
-        logoutDone: false,
-        logoutError: action.payload,
-      };
+      case LOG_OUT_SUCCESS:
+        draft.logoutLoading = false;
+        draft.logoutDone = true;
+        draft.me = null;
+        break;
 
-    case SIGN_UP_REQUEST:
-      return state;
-    case SIGN_UP_SUCCESS:
-      return state;
-    case SIGN_UP_FAILURE:
-      return state;
+      case LOG_OUT_FAILURE:
+        draft.logoutLoading = false;
+        draft.logoutError = action.payload;
+        break;
 
-    case ADD_POST_TO_ME: {
-      const posts = [action.payload, ...state.me.Posts];
-      return {
-        ...state,
-        me: {
-          ...state.me,
-          Posts: posts,
-        },
-      };
+      case SIGN_UP_REQUEST:
+        return state;
+      case SIGN_UP_SUCCESS:
+        return state;
+      case SIGN_UP_FAILURE:
+        return state;
+
+      // Follow 관련
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push({ id: action.payload });
+        break;
+
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followDone = false;
+        draft.loginError = action.payload;
+        break;
+
+      case UNFOLLOW_REQUEST:
+        draft.unfollowLoading = true;
+        draft.unfollowDone = false;
+        draft.unfollowError = null;
+        break;
+
+      case UNFOLLOW_SUCCESS:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter((user) => user.id !== action.payload);
+        break;
+
+      case UNFOLLOW_FAILURE:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = false;
+        draft.loginError = action.payload;
+        break;
+
+      // POST 리듀서에서 나오는 액션 처리
+
+      case ADD_POST_TO_ME:
+        draft.me.Posts.unshift({ id: action.payload });
+        break;
+
+      case REMOVE_POST_OF_ME:
+        draft.me.Posts = draft.me.Posts.filter((post) => post.id !== action.payload);
+        break;
+
+      default:
+        break;
     }
-
-    case REMOVE_POST_OF_ME: {
-      console.log('페이로드', action.payload);
-      const posts = state.me.Posts.filter((post) => post.id !== action.payload);
-
-      return {
-        ...state,
-        me: {
-          ...state.me,
-          Posts: posts,
-        },
-      };
-    }
-
-    default:
-      return state;
-  }
-};
+  });
 
 export default reducer;

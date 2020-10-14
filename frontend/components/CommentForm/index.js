@@ -22,7 +22,6 @@ function CommentForm({ post }) {
   }, [addCommentDone]);
 
   const onSubmitComment = useCallback(() => {
-    console.log(id, commentText);
     dispatch(
       addCommentRequestAction({
         content: commentText,
@@ -58,7 +57,17 @@ function CommentForm({ post }) {
 }
 
 CommentForm.propTypes = {
-  id: PropTypes.number,
+  post: PropTypes.shape({
+    id: PropTypes.number,
+    User: PropTypes.shape({
+      nickname: PropTypes.string,
+      id: PropTypes.number,
+    }),
+    content: PropTypes.string,
+    createdAt: PropTypes.object,
+    Comments: PropTypes.arrayOf(PropTypes.object),
+    Images: PropTypes.arrayOf(PropTypes.object),
+  }).isRequired,
 };
 
 export default CommentForm;

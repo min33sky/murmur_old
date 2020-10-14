@@ -3,6 +3,7 @@ import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { addPostRequestAction } from '../../reducers/post';
 import useInput from '../../hooks/useInput';
+
 const { TextArea } = Input;
 
 /**
@@ -13,22 +14,13 @@ function PostForm() {
   const imageInput = useRef(); // ? 이미지 등록 버튼 클릭을 위한 ref
   const [text, onChangeText, setText] = useInput('');
   const { imagePaths, addPostDone } = useSelector((state) => state.post); // 등록 할 이미지의 주소
-  const { me } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (addPostDone) setText('');
   }, [addPostDone]);
 
   const onSubmit = useCallback(() => {
-    dispatch(
-      addPostRequestAction({
-        User: {
-          id: me.id,
-          nickname: me.nickname,
-        },
-        content: text,
-      }),
-    );
+    dispatch(addPostRequestAction(text));
   }, [dispatch, text]);
 
   /**
