@@ -9,6 +9,8 @@ Can U Hear Me?
 - antd
 - styledComponents
 - react-slick
+- shortid
+- faker
 
 ## Backend
 

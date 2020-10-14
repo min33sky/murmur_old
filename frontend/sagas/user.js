@@ -1,5 +1,6 @@
 import { all, fork, takeLatest, call, put, delay } from 'redux-saga/effects';
 import axios from 'axios';
+import shortid from 'shortid';
 import {
   LOG_IN_REQUEST,
   LOG_OUT_REQUEST,
@@ -27,7 +28,10 @@ function* login(action) {
     yield put({
       type: LOG_IN_SUCCESS,
       // payload: response.data,
-      payload: action.payload,
+      payload: {
+        ...action.payload,
+        id: shortid.generate(),
+      },
     });
   } catch (error) {
     yield put({

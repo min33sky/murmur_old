@@ -4,6 +4,8 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import useInput from '../hooks/useInput';
 import styled from 'styled-components';
 import { Typography } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupRequestAction } from '../reducers/user';
 const { Title, Paragraph } = Typography;
 
 const ErrorMessage = styled.div`
@@ -14,7 +16,10 @@ const ErrorMessage = styled.div`
  * 회원 가입 페이지
  */
 const Signup = () => {
-  const [id, onChangeId] = useInput('');
+  const { signUpLoading } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
 
@@ -41,8 +46,9 @@ const Signup = () => {
     // ! 한번 더 입력에 대한 체크를 해준다.
     if (password !== passwordCheck) return setPasswordError(true);
     if (!term) return setTermError(true);
-    console.log(id, password);
-  }, [password, passwordCheck, term, id]);
+    console.log(email, password, nickname);
+    dispatch(signupRequestAction({ email, password, nickname }));
+  }, [password, passwordCheck, term, email]);
 
   return (
     <AppLayout>
@@ -53,13 +59,13 @@ const Signup = () => {
 
       <Form onFinish={onSumbit}>
         <div>
-          <label htmlFor='user-id'>아이디</label>
+          <label htmlFor='user-email'>이메일</label>
           <br />
           <Input
-            type='text'
-            id='user-id'
-            value={id}
-            onChange={onChangeId}
+            type='email'
+            id='user-email'
+            value={email}
+            onChange={onChangeEmail}
             required
           />
         </div>
@@ -111,7 +117,12 @@ const Signup = () => {
         </div>
 
         <div style={{ marginTop: '20px' }}>
-          <Button type='primary' htmlType='submit' style={{ width: '100%' }}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            style={{ width: '100%' }}
+            loading={signUpLoading}
+          >
             가입
           </Button>
         </div>

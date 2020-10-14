@@ -7,7 +7,7 @@ import { logoutRequestAction } from '../reducers/user';
  * 프로필 컴포넌트
  */
 function UserProfile() {
-  const { me } = useSelector((state) => state.user);
+  const { me, logoutLoading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const onLogout = useCallback(() => {
@@ -19,20 +19,25 @@ function UserProfile() {
       actions={[
         <div key='twit'>
           게시글
-          <br />0
+          <br />
+          {me.Posts.length}
         </div>,
         <div key='followings'>
           팔로잉
-          <br />0
+          <br />
+          {me.Followings.length}
         </div>,
         <div key='followers'>
           팔로워
-          <br />0
+          <br />
+          {me.Followers.length}
         </div>,
       ]}
     >
       <Card.Meta title={me.nickname} avatar={<Avatar>MIN</Avatar>}></Card.Meta>
-      <Button onClick={onLogout}>로그아웃</Button>
+      <Button onClick={onLogout} loading={logoutLoading}>
+        로그아웃
+      </Button>
     </Card>
   );
 }

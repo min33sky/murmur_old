@@ -8,19 +8,21 @@ import {
   EllipsisOutlined,
   HeartTwoTone,
 } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PostImages from '../PostImages';
 import CommentForm from '../CommentForm';
 import PostCardContent from '../PostCardContent';
+import { removePostRequestAction } from '../../reducers/post';
 
 /**
  * 글 내용을 보여줄 카드
  * @param {Object} post 게시글 정보
  */
 function PostCard({ post }) {
+  const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
+  const { removePostLoading } = useSelector((state) => state.post);
   const id = me && me.id;
-
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
@@ -30,6 +32,11 @@ function PostCard({ post }) {
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
+  }, []);
+
+  const onRemovePost = useCallback(() => {
+    // TODO : 게시물 삭제 액션 디스패치
+    dispatch(removePostRequestAction(post.id));
   }, []);
 
   return (
@@ -57,7 +64,13 @@ function PostCard({ post }) {
                 {id && id === post.User.id ? (
                   <>
                     <Button>수정</Button>
-                    <Button type='danger'>삭제</Button>
+                    <Button
+                      type='danger'
+                      onClick={onRemovePost}
+                      loading={removePostLoading}
+                    >
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <Button>신고</Button>

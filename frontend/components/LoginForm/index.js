@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Link from 'next/link';
-import useInput from '../../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
+import useInput from '../../hooks/useInput';
 import { loginRequestAction } from '../../reducers/user';
 
 const ButtonWrapper = styled.div`
@@ -18,9 +18,9 @@ const FormWrapper = styled(Form)`
  * 로그인 컴포넌트
  */
 const LoginForm = () => {
-  const [id, onChangeId] = useInput('');
+  const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
-  const { isLoggingIn } = useSelector((state) => state.user);
+  const { loginLoading } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -28,9 +28,8 @@ const LoginForm = () => {
     ? onFinish()에는 e.defaultPrevent()가 자동 호출된다.
   */
   const onSubmitForm = useCallback(() => {
-    console.log(id, password);
-    dispatch(loginRequestAction({ id, password }));
-  }, [id, password]);
+    dispatch(loginRequestAction({ email, password }));
+  }, [email, password]);
 
   return (
     <FormWrapper onFinish={onSubmitForm}>
@@ -40,9 +39,9 @@ const LoginForm = () => {
         <Input
           type='text'
           id='user-email'
-          value={id}
-          onChange={onChangeId}
-        ></Input>
+          value={email}
+          onChange={onChangeEmail}
+        />
       </div>
       <div>
         <label htmlFor='password'>패스워드</label>
@@ -52,11 +51,11 @@ const LoginForm = () => {
           id='password'
           value={password}
           onChange={onChangePassword}
-        ></Input>
+        />
       </div>
 
       <ButtonWrapper>
-        <Button type='primary' htmlType='submit' loading={isLoggingIn}>
+        <Button type='primary' htmlType='submit' loading={loginLoading}>
           로그인
         </Button>
         <Link href='/signup'>

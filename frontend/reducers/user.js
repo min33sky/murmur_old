@@ -1,6 +1,11 @@
-/****************************************************
+import shortid from 'shortid';
+import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from './post';
+
+/** **************************************************
+ *
  * Action Type
- ****************************************************/
+ *
+ *************************************************** */
 export const LOG_IN_REQUEST = 'user/LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'user/LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'user/LOG_IN_FAILURE';
@@ -8,9 +13,15 @@ export const LOG_OUT_REQUEST = 'user/LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS = 'user/LOG_OUT_SUCCESS';
 export const LOG_OUT_FAILURE = 'user/LOG_OUT_FAILURE';
 
-/****************************************************
+export const SIGN_UP_REQUEST = 'user/SIGN_UP_REQUEST';
+export const SIGN_UP_SUCCESS = 'user/SIGN_UP_SUCCESS';
+export const SIGN_UP_FAILURE = 'user/SIGN_UP_FAILURE';
+
+/** **************************************************
+ *
  * Action Function
- ****************************************************/
+ *
+ *************************************************** */
 
 export const loginRequestAction = (data) => ({
   type: LOG_IN_REQUEST,
@@ -21,15 +32,28 @@ export const logoutRequestAction = () => ({
   type: LOG_OUT_REQUEST,
 });
 
-// ! 더미 함수
-const dummyUser = (data) => ({
-  ...data,
-  nickname: '닉네임이 들어갈 곳',
+export const signupRequestAction = (data) => ({
+  type: SIGN_UP_REQUEST,
+  payload: data,
 });
 
-/****************************************************
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 더미 함수
+const dummyUser = (data) => ({
+  ...data,
+  Posts: [],
+  Followers: [
+    { id: shortid.generate(), nickname: '침착맨' },
+    { id: shortid.generate(), nickname: '따효니' },
+  ],
+  Followings: [{ id: shortid.generate(), nickname: '동수칸' }],
+  nickname: '불건전한 닉네임',
+});
+
+/** **************************************************
+ *
  * State & Reducer Function
- ****************************************************/
+ *
+ *************************************************** */
 
 const initialState = {
   loginLoading: false, // 로그인 요청 여부
@@ -72,6 +96,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         logoutLoading: true,
+        logoutDone: false,
       };
 
     case LOG_OUT_SUCCESS:
@@ -79,15 +104,47 @@ const reducer = (state = initialState, action) => {
         ...state,
         logoutLoading: false,
         logoutDone: true,
-        loginDone: false,
         me: null,
       };
 
     case LOG_OUT_FAILURE:
       return {
         ...state,
+        logoutLoading: false,
+        logoutDone: false,
         logoutError: action.payload,
       };
+
+    case SIGN_UP_REQUEST:
+      return state;
+    case SIGN_UP_SUCCESS:
+      return state;
+    case SIGN_UP_FAILURE:
+      return state;
+
+    case ADD_POST_TO_ME: {
+      const posts = [action.payload, ...state.me.Posts];
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: posts,
+        },
+      };
+    }
+
+    case REMOVE_POST_OF_ME: {
+      console.log('페이로드', action.payload);
+      const posts = state.me.Posts.filter((post) => post.id !== action.payload);
+
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: posts,
+        },
+      };
+    }
 
     default:
       return state;
