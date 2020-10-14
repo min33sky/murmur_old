@@ -2,7 +2,10 @@ import shortid from 'shortid';
 import produce from 'immer';
 import faker from 'faker';
 
-// Action Type
+//----------------------------------------------------------------------------
+//* Action Type
+//----------------------------------------------------------------------------
+
 export const ADD_POST_REQUEST = 'post/ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'post/ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'post/ADD_POST_FAILURE';
@@ -23,7 +26,10 @@ export const REMOVE_POST_FAILURE = 'post/REMOVE_POST_FAILURE';
 export const ADD_POST_TO_ME = 'post/ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'post/REMOVE_POST_OF_ME';
 
-// Action Function
+//----------------------------------------------------------------------------
+//* Action Function
+//----------------------------------------------------------------------------
+
 export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
   payload: data,
@@ -60,25 +66,6 @@ const dummyComment = (data) => ({
   content: data,
 });
 
-// 초기 상태
-const initialState = {
-  mainPosts: [],
-  imagePaths: [], // 업로드 할 이미지 주소
-  hasMorePosts: true, // 불러올 게시물이 더 있는지 체크
-  addPostLoading: false,
-  addPostDone: false,
-  addPostError: null,
-  loadPostsLoading: false,
-  loadPostsDone: false,
-  loadPostsError: null,
-  addCommentLoading: false,
-  addCommentDone: false,
-  addCommentError: null,
-  removePostLoading: false,
-  removePostDone: false,
-  removePostError: null,
-};
-
 /*
   * 게시물 더미 데이터 생성 함수
   ? 속성 값이 대문자로 시작하는 경우는
@@ -110,6 +97,28 @@ export const generateDummyPost = (number) =>
         },
       ],
     }));
+
+//----------------------------------------------------------------------------
+//* State & Reducer Function
+//----------------------------------------------------------------------------
+
+const initialState = {
+  mainPosts: [],
+  imagePaths: [], // 업로드 할 이미지 주소
+  hasMorePosts: true, // 불러올 게시물이 더 있는지 체크
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: null,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
+};
 
 // Post Reducer
 const reducer = (state = initialState, action) =>

@@ -2,14 +2,14 @@ import shortid from 'shortid';
 import produce from 'immer';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from './post';
 
-/** **************************************************
- *
- * Action Type
- *
- *************************************************** */
+//----------------------------------------------------------------------------
+//* Action Type
+//----------------------------------------------------------------------------
+
 export const LOG_IN_REQUEST = 'user/LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'user/LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'user/LOG_IN_FAILURE';
+
 export const LOG_OUT_REQUEST = 'user/LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS = 'user/LOG_OUT_SUCCESS';
 export const LOG_OUT_FAILURE = 'user/LOG_OUT_FAILURE';
@@ -26,11 +26,9 @@ export const UNFOLLOW_REQUEST = 'user/UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'user/UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'user/UNFOLLOW_FAILURE';
 
-/** **************************************************
- *
- * Action Function
- *
- *************************************************** */
+//----------------------------------------------------------------------------
+//* Action Function
+//----------------------------------------------------------------------------
 
 export const loginRequestAction = (data) => ({
   type: LOG_IN_REQUEST,
@@ -56,7 +54,7 @@ export const unfollowRequestAction = (userId) => ({
   payload: userId,
 });
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 더미 함수
+//! --------------------------------- 더미 함수 -------------------------------
 const dummyUser = (data) => ({
   ...data,
   Posts: [],
