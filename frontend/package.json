@@ -11,11 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
-<<<<<<< HEAD
     "antd": "^4.7.0",
-=======
-    "antd": "^4.5.4",
->>>>>>> d7618000fed4ee0c4b8c8b3af665323fc89dde4f
     "axios": "^0.19.2",
     "faker": "^5.1.0",
     "immer": "^7.0.9",
