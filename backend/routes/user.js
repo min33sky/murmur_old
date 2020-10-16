@@ -23,7 +23,7 @@ router.post('/', async (req, res, next) => {
       },
     });
 
-    if (!exUser) {
+    if (exUser) {
       return res.status(403).send('이미 유저가 존재합니다.');
     }
 

@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes) => {
 
   Post.associate = (db) => {
     //? belongsTo로 인해 column이 자동으로 생성
-    db.Post.belongsTo(db.User); // userId
-    db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
-    db.Post.hasMany(db.Image);
-    db.Post.hasMany(db.Comment);
-    db.Post.belongsToMany(db.User, { through: 'Like', as: 'Likers' });
-    db.Post.belongsTo(db.Post, { as: 'Retweet' }); // retweetId
+    db.Post.belongsTo(db.User); // column: userId, method: (post.addUser, post.getUser, post.setUser)
+    db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' }); // post.addHashtags
+    db.Post.hasMany(db.Image); // post.addImages, post.getImages
+    db.Post.hasMany(db.Comment); // post.addComments, post.getComments
+    db.Post.belongsToMany(db.User, { through: 'Like', as: 'Likers' }); // post.addLikers, post.removeLikers
+    db.Post.belongsTo(db.Post, { as: 'Retweet' }); // column: retweetId, method: post.addRetweet
   };
 
   return Post;

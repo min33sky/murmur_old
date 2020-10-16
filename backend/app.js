@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('./models');
+const cors = require('cors');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 
@@ -15,6 +16,11 @@ const app = express();
 //----------------------------------------------------
 //* Middleware
 //----------------------------------------------------
+app.use(
+  cors({
+    origin: true,
+  }),
+);
 app.use(express.json()); // JSON Parsing
 app.use(express.urlencoded({ extended: true })); // Form Data Parsing
 
@@ -24,6 +30,9 @@ app.use(express.urlencoded({ extended: true })); // Form Data Parsing
 app.use('/user', userRouter);
 app.use('/post', postRouter);
 
+//----------------------------------------------------
+//* Server Start
+//----------------------------------------------------
 app.listen(3065, () => {
   console.log('=== Murmur Backend Server ON ===');
 });
