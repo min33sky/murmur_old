@@ -1,12 +1,5 @@
 import shortId from 'shortid';
-import {
-  all,
-  fork,
-  takeLatest,
-  put,
-  delay,
-  throttle,
-} from 'redux-saga/effects';
+import { all, fork, takeLatest, put, delay, throttle } from 'redux-saga/effects';
 import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
@@ -114,15 +107,16 @@ function* addComment(action) {
 }
 
 function* watchAddPost() {
-  /*
-   ? takeLatest:
-   ! 요청이 취소되는 것이 아니라 응답이 취소되는 것이다.
-   ! 그래서 같은 요청인지 체크를 서버에서 해줘야 한다.
+  /**
+   *? takeLatest:
+   *! 요청이 취소되는 것이 아니라 응답이 취소되는 것이다.
+   *! 그래서 같은 요청인지 체크를 서버에서 해줘야 한다.
    */
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
 function* watchLoadPosts() {
+  // ? 지속적인 요청을 막기위해 throttle을 적용 (단, 이것만으로는 완전 해결 불가능)
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
 

@@ -18,6 +18,10 @@ export const SIGN_UP_REQUEST = 'user/SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'user/SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'user/SIGN_UP_FAILURE';
 
+export const CHANGE_NICKNAME_REQUEST = 'user/CHANGE_NICKNAME_REQUEST';
+export const CHANGE_NICKNAME_SUCCESS = 'user/CHANGE_NICKNAME_SUCCESS';
+export const CHANGE_NICKNAME_FAILURE = 'user/CHANGE_NICKNAME_FAILURE';
+
 export const FOLLOW_REQUEST = 'user/FOLLOW_REQUEST';
 export const FOLLOW_SUCCESS = 'user/FOLLOW_SUCCESS';
 export const FOLLOW_FAILURE = 'user/FOLLOW_FAILURE';
@@ -30,18 +34,23 @@ export const UNFOLLOW_FAILURE = 'user/UNFOLLOW_FAILURE';
 //* Action Function
 //----------------------------------------------------------------------------
 
-export const loginRequestAction = (data) => ({
+export const loginRequestAction = (loginData) => ({
   type: LOG_IN_REQUEST,
-  payload: data,
+  payload: loginData,
 });
 
 export const logoutRequestAction = () => ({
   type: LOG_OUT_REQUEST,
 });
 
-export const signupRequestAction = (data) => ({
+export const signupRequestAction = (signUpData) => ({
   type: SIGN_UP_REQUEST,
-  payload: data,
+  payload: signUpData,
+});
+
+export const changeNicknameAction = (nicknameData) => ({
+  type: CHANGE_NICKNAME_REQUEST,
+  payload: nicknameData,
 });
 
 export const followRequestAction = (userId) => ({
@@ -77,11 +86,17 @@ const initialState = {
   logoutLoading: false, // 로그아웃 요청 여부
   logoutDone: false,
   logoutError: null,
+  signUpLoading: false, // 회원 가입 요청 여부
+  signUpDone: false,
+  signUpError: null,
+  changeNicknameLoading: false,
+  changeNicknameDone: false,
+  changeNicknameError: null,
   followLoding: false,
   unfollowLoding: false,
   me: null, // 로그인 한 사용자 정보
-  signedUpData: {}, // 가입 요청 데이터
-  loginData: [], // 로그인 요청 데이터
+  // signedUpData: {}, // 가입 요청 데이터
+  // loginData: [], // 로그인 요청 데이터
 };
 
 // TODO: 닉네임 수정도 만들자
@@ -125,11 +140,30 @@ const reducer = (state = initialState, action) =>
         break;
 
       case SIGN_UP_REQUEST:
-        return state;
+        draft.signUpLoading = true;
+        draft.signUpDone = false;
+        draft.signUpError = null;
+        break;
+
       case SIGN_UP_SUCCESS:
-        return state;
+        draft.signUpLoading = false;
+        draft.signUpDone = true;
+        break;
+
       case SIGN_UP_FAILURE:
-        return state;
+        draft.signUpLoading = false;
+        draft.signUpError = action.payload;
+        break;
+
+      // TODO: 미완성
+      case CHANGE_NICKNAME_REQUEST:
+        break;
+
+      case CHANGE_NICKNAME_SUCCESS:
+        break;
+
+      case CHANGE_NICKNAME_FAILURE:
+        break;
 
       // Follow 관련
       case FOLLOW_REQUEST:

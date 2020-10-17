@@ -26,10 +26,6 @@ import {
 //   return axios.post('/api', data);
 // }
 
-function signUpApi(data) {
-  return axios.post('http://localhost:3065/user', data);
-}
-
 function* login(action) {
   try {
     // let response = yield call(loginApi, action.payload);
@@ -65,14 +61,22 @@ function* logout() {
   }
 }
 
+function signUpApi(data) {
+  return axios.post('http://localhost:3065/user', data);
+}
+
+/**
+ * 회원 가입
+ * @param {Object} action 회원 가입 액션
+ */
 function* signUp(action) {
   try {
     const result = yield call(signUpApi, action.payload);
 
-    yield {
+    yield put({
       type: SIGN_UP_SUCCESS,
-      payload: result,
-    };
+      payload: result, //! 아직 쓸모 없음........................
+    });
   } catch (error) {
     yield put({
       type: SIGN_UP_FAILURE,

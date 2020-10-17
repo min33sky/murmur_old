@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Form, Input, Button, Checkbox, Typography } from 'antd';
 import styled from 'styled-components';
-
+import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../hooks/useInput';
 import AppLayout from '../components/AppLayout';
@@ -14,11 +14,11 @@ const ErrorMessage = styled.div`
 `;
 
 /**
- * 회원 가입 페이지
+ * 회원 가입 페이지 (/signup)
  */
 const Signup = () => {
-  const { signUpLoading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -43,6 +43,14 @@ const Signup = () => {
     setTermError(false);
   }, []);
 
+  useEffect(() => {
+    if (signUpDone) Router.push('/');
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (signUpError) alert(signUpError);
+  }, [signUpError]);
+
   const onSumbit = useCallback(() => {
     //! 한번 더 입력에 대한 체크를 해준다.
     if (password !== passwordCheck) return setPasswordError(true);
@@ -50,6 +58,10 @@ const Signup = () => {
     dispatch(signupRequestAction({ email, password, nickname }));
   }, [password, passwordCheck, term, email]);
 
+  /**
+   * TODO
+   * * 옆의 로그인 화면에 id값과 동일해서 경고가 발생하므로 처리할 것!
+   */
   return (
     <AppLayout>
       <Typography>
@@ -73,14 +85,20 @@ const Signup = () => {
         <div>
           <label htmlFor='password'>패스워드</label>
           <br />
-          <Input type='text' id='password' value={password} onChange={onChangePassword} required />
+          <Input
+            type='password'
+            id='password'
+            value={password}
+            onChange={onChangePassword}
+            required
+          />
         </div>
 
         <div>
           <label htmlFor='passwordCheck'>패스워드 확인</label>
           <br />
           <Input
-            type='text'
+            type='password'
             id='passwordCheck'
             value={passwordCheck}
             onChange={onChangePasswordCheck}
