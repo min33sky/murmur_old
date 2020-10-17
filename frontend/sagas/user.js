@@ -18,26 +18,21 @@ import {
   SIGN_UP_FAILURE,
 } from '../reducers/user';
 
-// function loginApi(data) {
-//   return axios.post('/api', data);
-// }
+function loginApi(data) {
+  return axios.post('/login', data);
+}
 
-// function logOutApi(data) {
-//   return axios.post('/api', data);
-// }
-
+/**
+ * 로그인
+ * @param {Object} action 로그인 데이터
+ */
 function* login(action) {
   try {
-    // let response = yield call(loginApi, action.payload);
-    yield delay(1000);
+    const result = yield call(loginApi, action.payload);
 
     yield put({
       type: LOG_IN_SUCCESS,
-      // payload: response.data,
-      payload: {
-        ...action.payload,
-        id: 1,
-      },
+      payload: result.data,
     });
   } catch (error) {
     yield put({
@@ -46,6 +41,10 @@ function* login(action) {
     });
   }
 }
+
+// function logOutApi(data) {
+//   return axios.post('/logout', data);
+// }
 
 function* logout() {
   try {

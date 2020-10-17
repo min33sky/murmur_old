@@ -1,15 +1,20 @@
 const express = require('express');
 const db = require('./models');
 const cors = require('cors');
+const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 
+// DB 연결
 db.sequelize
   .sync()
   .then(() => {
     console.log('======== DB 연결 성공 ========');
   })
   .catch(console.error);
+
+// Passport 설정
+passportConfig();
 
 const app = express();
 

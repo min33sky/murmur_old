@@ -17,3 +17,4 @@ Can U Hear Me?
 - express
 - mysql
 - sequelize
+- passport
