@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Comment.associate = (db) => {
-    db.Comment.belongsTo(db.User); // userId
-    db.Comment.belongsTo(db.Post); // postId
+    db.Comment.belongsTo(db.User); // UserId
+    db.Comment.belongsTo(db.Post); // PostId
   };
 
   return Comment;

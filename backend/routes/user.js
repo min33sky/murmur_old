@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { User, Post } = require('../models');
+const { isNotLoggedIn, isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get('/', (req, res) => {
  * ? 패스포트와 미들웨어 확장을 이용한다.
  * POST /login
  */
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (err, user, loginFailureInfo) => {
     // 서버 에러
     if (err) {
@@ -70,7 +71,7 @@ router.post('/login', (req, res, next) => {
  * 회원 가입
  * POST /
  */
-router.post('/', async (req, res, next) => {
+router.post('/', isNotLoggedIn, async (req, res, next) => {
   try {
     // 1. 기존 회원 있는지 확인
     // 2. 있으면 에러 응답. 없으면 비밀번호 해쉬화
@@ -107,7 +108,7 @@ router.post('/', async (req, res, next) => {
  * 로그아웃
  * POST /logout
  */
-router.post('/logout', (req, res) => {
+router.post('/logout', isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
   res.status(200).send('Logout Complete');

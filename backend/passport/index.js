@@ -9,6 +9,7 @@ module.exports = () => {
   });
 
   // 비직렬화 (세션에 저장된 값을 시퀄라이저 객체로 변환)
+  // 라우팅 함수를 호출하기 전에 먼저 호출된다.
   // id는 세션 id를 파싱한 값
   passport.deserializeUser(async (id, done) => {
     try {
