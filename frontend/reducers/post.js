@@ -45,26 +45,25 @@ export const removePostRequestAction = (postId) => ({
   payload: postId,
 });
 
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: 'messi',
-  },
-  Images: [],
-  Comments: [],
-});
+// const dummyPost = (data) => ({
+//   id: data.id,
+//   content: data.content,
+//   User: {
+//     id: 1,
+//     nickname: 'messi',
+//   },
+//   Images: [],
+//   Comments: [],
+// });
 
-const dummyComment = (data) => ({
-  id: shortid.generate(),
-  User: {
-    //! messi의 id가 다르므로 문제가 생길 것이다.
-    id: shortid.generate(),
-    nickname: 'messi',
-  },
-  content: data,
-});
+// const dummyComment = (data) => ({
+//   id: shortid.generate(),
+//   User: {
+//     id: shortid.generate(),
+//     nickname: 'messi',
+//   },
+//   content: data,
+// });
 
 /*
   * 게시물 더미 데이터 생성 함수
@@ -152,7 +151,7 @@ const reducer = (state = initialState, action) =>
       case ADD_POST_SUCCESS:
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.mainPosts.unshift(dummyPost(action.payload));
+        draft.mainPosts.unshift(action.payload);
         break;
 
       case ADD_POST_FAILURE:
@@ -187,8 +186,8 @@ const reducer = (state = initialState, action) =>
         break;
 
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.payload.postId);
-        post.Comments.unshift(dummyComment(action.payload.content));
+        const post = draft.mainPosts.find((v) => v.id === action.payload.PostId);
+        post.Comments.unshift(action.payload);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;

@@ -1,5 +1,5 @@
-import shortId from 'shortid';
-import { all, fork, takeLatest, put, delay, throttle } from 'redux-saga/effects';
+import { all, fork, takeLatest, put, delay, throttle, call } from 'redux-saga/effects';
+import axios from 'axios';
 import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
@@ -17,35 +17,24 @@ import {
   generateDummyPost,
   LOAD_POSTS_FAILURE,
 } from '../reducers/post';
-// import axios from 'axios';
 
-// function addPostApi(data) {
-//   return axios.post('/api/post', data);
-// }
-
-// function addCommentApi(data) {
-//   return null;
-// }
+function addPostApi(text) {
+  return axios.post('/post', { content: text });
+}
 
 function* addPost(action) {
   try {
-    // let response = yield call(addPostApi, action.payload);
-
-    const randomId = shortId.generate();
+    const response = yield call(addPostApi, action.payload);
 
     yield put({
       type: ADD_POST_SUCCESS,
-      // payload: response.data
-      payload: {
-        id: randomId,
-        content: action.payload,
-      },
+      payload: response.data,
     });
 
     // User Reducer도 업데이트
     yield put({
       type: ADD_POST_TO_ME,
-      payload: randomId,
+      payload: response.data.id,
     });
   } catch (error) {
     yield put({
@@ -91,12 +80,16 @@ function* removePost(action) {
   }
 }
 
+function addCommentApi(commentData) {
+  return axios.post(`/post/${commentData.postId}/comment`, commentData);
+}
+
 function* addComment(action) {
   try {
+    const response = yield call(addCommentApi, action.payload);
     yield put({
       type: ADD_COMMENT_SUCCESS,
-      // 임시 payload
-      payload: action.payload,
+      payload: response.data,
     });
   } catch (error) {
     yield put({

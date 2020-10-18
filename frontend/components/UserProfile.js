@@ -35,7 +35,7 @@ function UserProfile() {
         </div>,
       ]}
     >
-      <Card.Meta title={me.nickname} avatar={<Avatar>MIN</Avatar>} />
+      <Card.Meta title={me.nickname} avatar={<Avatar>{me.nickname[0]}</Avatar>} />
       <Button onClick={onLogout} loading={logoutLoading}>
         로그아웃
       </Button>
