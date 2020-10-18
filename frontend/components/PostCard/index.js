@@ -21,12 +21,16 @@ import FollowButton from '../FollowButton';
  */
 function PostCard({ post }) {
   const dispatch = useDispatch();
+
   const { me } = useSelector((state) => state.user);
-  const { removePostLoading } = useSelector((state) => state.post);
   const id = me && me.id;
+  const { removePostLoading } = useSelector((state) => state.post);
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
+  //-------------------------------------------------------------------
+  //* Handler
+  //-------------------------------------------------------------------
   const onToggleLikes = useCallback(() => {
     setLiked((prev) => !prev);
   }, []);
@@ -101,8 +105,6 @@ function PostCard({ post }) {
           />
         </>
       )}
-      {/* <CommentForm />
-      <Comments /> */}
     </>
   );
 }

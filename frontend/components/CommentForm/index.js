@@ -16,11 +16,12 @@ function CommentForm({ post }) {
   const [commentText, onChangeCommentText, setCommentText] = useInput('');
 
   useEffect(() => {
-    if (addCommentDone) {
-      setCommentText('');
-    }
+    if (addCommentDone) setCommentText('');
   }, [addCommentDone]);
 
+  //-------------------------------------------------------------------
+  //* Handler
+  //-------------------------------------------------------------------
   const onSubmitComment = useCallback(() => {
     dispatch(
       addCommentRequestAction({
@@ -34,11 +35,7 @@ function CommentForm({ post }) {
   return (
     <Form onFinish={onSubmitComment}>
       <Form.Item style={{ position: 'relative', margin: 0 }}>
-        <Input.TextArea
-          onChange={onChangeCommentText}
-          value={commentText}
-          rows={4}
-        />
+        <Input.TextArea onChange={onChangeCommentText} value={commentText} rows={4} />
         <Button
           style={{
             position: 'absolute',

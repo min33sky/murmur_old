@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import Link from 'next/link';
@@ -18,16 +18,21 @@ const FormWrapper = styled(Form)`
  * 로그인 컴포넌트
  */
 const LoginForm = () => {
-  const [email, onChangeEmail] = useInput('');
-  const [password, onChangePassword] = useInput('');
-  const { loginLoading } = useSelector((state) => state.user);
-
   const dispatch = useDispatch();
 
-  /*
-    ? onFinish()에는 e.defaultPrevent()가 자동 호출된다.
-  */
+  const [email, onChangeEmail] = useInput('');
+  const [password, onChangePassword] = useInput('');
+  const { loginLoading, loginError } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (loginError) alert(loginError);
+  }, [loginError]);
+
+  //-------------------------------------------------------------------
+  //* Handler
+  //-------------------------------------------------------------------
   const onSubmitForm = useCallback(() => {
+    // ? next가 제공하는 onFinish()에는 e.defaultPrevent()가 자동 호출된다.
     dispatch(loginRequestAction({ email, password }));
   }, [email, password]);
 
@@ -36,22 +41,12 @@ const LoginForm = () => {
       <div>
         <label htmlFor='user-email'>이메일</label>
         <br />
-        <Input
-          type='text'
-          id='user-email'
-          value={email}
-          onChange={onChangeEmail}
-        />
+        <Input type='text' id='user-email' value={email} onChange={onChangeEmail} />
       </div>
       <div>
         <label htmlFor='password'>패스워드</label>
         <br />
-        <Input
-          type='password'
-          id='password'
-          value={password}
-          onChange={onChangePassword}
-        />
+        <Input type='password' id='password' value={password} onChange={onChangePassword} />
       </div>
 
       <ButtonWrapper>

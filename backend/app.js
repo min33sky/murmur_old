@@ -1,9 +1,19 @@
 const express = require('express');
 const db = require('./models');
 const cors = require('cors');
+const passport = require('passport');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+
+// Dotenv
+dotenv.config();
+
+// Passport 연결
+passportConfig();
 
 // DB 연결
 db.sequelize
@@ -12,9 +22,6 @@ db.sequelize
     console.log('======== DB 연결 성공 ========');
   })
   .catch(console.error);
-
-// Passport 설정
-passportConfig();
 
 const app = express();
 
@@ -29,6 +36,17 @@ app.use(
     origin: true,
   }),
 );
+
+app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.json()); // JSON Parsing
 app.use(express.urlencoded({ extended: true })); // Form Data Parsing
 

@@ -19,6 +19,9 @@ function PostForm() {
     if (addPostDone) setText('');
   }, [addPostDone]);
 
+  //-------------------------------------------------------------------
+  //* Handler
+  //-------------------------------------------------------------------
   const onSubmit = useCallback(() => {
     dispatch(addPostRequestAction(text));
   }, [dispatch, text]);
@@ -32,11 +35,7 @@ function PostForm() {
   }, []);
 
   return (
-    <Form
-      style={{ margin: '10px 0 20px' }}
-      encType='multipart/form-data'
-      onFinish={onSubmit}
-    >
+    <Form style={{ margin: '10px 0 20px' }} encType='multipart/form-data' onFinish={onSubmit}>
       <TextArea
         value={text}
         onChange={onChangeText}

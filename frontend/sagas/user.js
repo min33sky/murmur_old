@@ -19,7 +19,7 @@ import {
 } from '../reducers/user';
 
 function loginApi(data) {
-  return axios.post('/login', data);
+  return axios.post('/user/login', data);
 }
 
 /**

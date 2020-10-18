@@ -4,7 +4,7 @@ import user from './user';
 import post from './post';
 
 /*
- * combineReducers : 리듀서들을 하나로 합쳐주는 함수
+  ? combineReducers : 리듀서들을 하나로 합쳐주는 함수
  */
 const rootReducer = combineReducers({
   index: (state = {}, action) => {

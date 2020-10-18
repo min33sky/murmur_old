@@ -19,13 +19,13 @@ import {
 } from '../reducers/post';
 // import axios from 'axios';
 
-function addPostApi(data) {
-  return axios.post('/api/post', data);
-}
+// function addPostApi(data) {
+//   return axios.post('/api/post', data);
+// }
 
-function addCommentApi(data) {
-  return null;
-}
+// function addCommentApi(data) {
+//   return null;
+// }
 
 function* addPost(action) {
   try {

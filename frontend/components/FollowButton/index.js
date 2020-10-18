@@ -13,6 +13,9 @@ function FollowButton({ post }) {
   const { me, followLoading, unfollowLoading } = useSelector((state) => state.user);
   const isFollowing = me?.Followings.find((user) => user.id === post.User.id);
 
+  //-------------------------------------------------------------------
+  //* Handler
+  //-------------------------------------------------------------------
   const onButtonClick = useCallback(() => {
     if (isFollowing) {
       dispatch(unfollowRequestAction(post.User.id));

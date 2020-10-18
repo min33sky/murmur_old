@@ -18,7 +18,7 @@ const ErrorMessage = styled.div`
  */
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -44,7 +44,12 @@ const Signup = () => {
   }, []);
 
   useEffect(() => {
-    if (signUpDone) Router.push('/');
+    // ? push와 달리 replace는 뒤로 가기가 되지 않는다.
+    if (me && me.id) Router.replace('/');
+  }, [me && me.id]);
+
+  useEffect(() => {
+    if (signUpDone) Router.replace('/');
   }, [signUpDone]);
 
   useEffect(() => {

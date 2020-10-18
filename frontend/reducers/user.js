@@ -64,16 +64,16 @@ export const unfollowRequestAction = (userId) => ({
 });
 
 //! --------------------------------- 더미 함수 -------------------------------
-const dummyUser = (data) => ({
-  ...data,
-  Posts: [],
-  Followers: [
-    { id: shortid.generate(), nickname: '침착맨' },
-    { id: shortid.generate(), nickname: '따효니' },
-  ],
-  Followings: [{ id: shortid.generate(), nickname: '동수칸' }],
-  nickname: '불건전한 닉네임',
-});
+// const dummyUser = (data) => ({
+//   ...data,
+//   Posts: [],
+//   Followers: [
+//     { id: shortid.generate(), nickname: '침착맨' },
+//     { id: shortid.generate(), nickname: '따효니' },
+//   ],
+//   Followings: [{ id: shortid.generate(), nickname: '동수칸' }],
+//   nickname: '불건전한 닉네임',
+// });
 
 //----------------------------------------------------------------------------
 //* State & Reducer Function
@@ -99,8 +99,6 @@ const initialState = {
   // loginData: [], // 로그인 요청 데이터
 };
 
-// TODO: 닉네임 수정도 만들자
-
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
@@ -113,7 +111,7 @@ const reducer = (state = initialState, action) =>
       case LOG_IN_SUCCESS:
         draft.loginLoading = false;
         draft.loginDone = true;
-        draft.me = dummyUser(action.payload);
+        draft.me = action.payload;
         break;
 
       case LOG_IN_FAILURE:
