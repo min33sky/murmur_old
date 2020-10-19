@@ -14,7 +14,6 @@ import {
   REMOVE_POST_OF_ME,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
-  generateDummyPost,
   LOAD_POSTS_FAILURE,
 } from '../reducers/post';
 
@@ -44,15 +43,20 @@ function* addPost(action) {
   }
 }
 
-function* loadPosts(action) {
+function loadPostsApi() {
+  return axios.get('/posts');
+}
+
+function* loadPosts() {
   try {
-    yield delay(1000);
+    const response = yield call(loadPostsApi);
 
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      payload: generateDummyPost(10),
+      payload: response.data,
     });
   } catch (error) {
+    console.error(error);
     yield put({
       type: LOAD_POSTS_FAILURE,
       payload: error.response.data,
@@ -92,6 +96,7 @@ function* addComment(action) {
       payload: response.data,
     });
   } catch (error) {
+    console.error(error);
     yield put({
       type: ADD_COMMENT_FAILURE,
       payload: error.response.data,

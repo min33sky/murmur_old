@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
     {
-      // id는 자동으로 들어감
+      // id는 DB에 자동으로 들어감
       email: {
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -26,9 +26,12 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (db) => {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
-    //? through: 다대다 관계에서 생성되는 중간 테이블
-    //? foreignKey: Column 명을 바꿔준다.
+    /**
+     * ? through: 다대다 관계에서 생성되는 중간 테이블
+     * ? foreignKey: column 명을 바꿔준다.
+     */
     db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
+
     db.User.belongsToMany(db.User, {
       through: 'Follow',
       as: 'Followings',

@@ -26,9 +26,16 @@ router.post('/', isLoggedIn, async (req, res, next) => {
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User, // 댓글 작성자
+              attributes: ['id', 'nickname'],
+            },
+          ],
         },
         {
           model: User,
+          attributes: ['id', 'nickname'],
         },
       ],
     });
@@ -61,10 +68,22 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
     const comment = await Comment.create({
       content: req.body.content,
       UserId: req.user.id,
-      PostId: req.params.postId,
+      PostId: parseInt(req.params.postId, 10), // id는 숫자 값이어야 한다.
     });
 
-    return res.status(200).json(comment);
+    const fullComment = await Comment.findOne({
+      where: {
+        id: comment.id,
+      },
+      include: [
+        {
+          model: User, // 댓글 작성자
+          attributes: ['id', 'nickname'],
+        },
+      ],
+    });
+
+    return res.status(200).json(fullComment);
   } catch (error) {
     console.error(error);
     return next(error);

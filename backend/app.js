@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
 const dotenv = require('dotenv');
@@ -8,6 +9,7 @@ const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
 
 const SERVER_PORT = 3065;
 
@@ -30,10 +32,15 @@ const app = express();
 //----------------------------------------------------
 //* Middlewares
 //----------------------------------------------------
+
+app.use(morgan('dev')); // Logger
+
 app.use(
-  // ? cors:
-  //! Browser와 Server의 Domain이 다르면 Browser가 요청을 차단한다. (쿠키 역시 차단)
-  //! 응답 요청에 Access Control Allow Origin 헤더를 직접 추가하거나 미들웨어를 이용해 해결
+  /**
+   * ? cors:
+   * ! Browser와 Server의 Domain이 다르면 Browser가 요청을 차단한다. (쿠키 역시 차단)
+   * ! 응답 요청에 Access Control Allow Origin 헤더를 직접 추가하거나 미들웨어를 이용해 해결
+   */
   cors({
     origin: true, // access-control-allow-origin
     credentials: true, //* 쿠키도 같이 전달한다. (access-control-allow-credentials)
@@ -56,8 +63,10 @@ app.use(express.urlencoded({ extended: true })); // Form Data Parsing
 //----------------------------------------------------
 //* Routes
 //----------------------------------------------------
-app.use('/user', userRouter);
+
+app.use('/posts', postsRouter);
 app.use('/post', postRouter);
+app.use('/user', userRouter);
 
 // ? 예외처리 미들웨어를 커스터마이징
 // ? 에러 페이지로 라우팅등 활용 가능
