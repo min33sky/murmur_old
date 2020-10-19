@@ -2,7 +2,7 @@ const express = require('express');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
-const { Post, Comment } = require('../models');
+const { Post, Comment, Image, User } = require('../models');
 
 /**
  * 게시물 등록
@@ -15,7 +15,25 @@ router.post('/', isLoggedIn, async (req, res, next) => {
       content: req.body.content,
       UserId: req.user.id,
     });
-    return res.status(200).json(post);
+
+    const fullPost = await Post.findOne({
+      where: {
+        id: post.id,
+      },
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+        },
+        {
+          model: User,
+        },
+      ],
+    });
+
+    return res.status(200).json(fullPost);
   } catch (error) {
     console.error(error);
     return next(error);

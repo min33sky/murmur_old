@@ -15,7 +15,7 @@ db.Post = require('./post')(sequelize, Sequelize);
 db.Image = require('./image')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);
 
-// 관계 설정
+// 모델 간의 관계 설정
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);

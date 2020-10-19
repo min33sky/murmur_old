@@ -32,10 +32,11 @@ const app = express();
 //----------------------------------------------------
 app.use(
   // ? cors:
-  //! 브라우저와 서버의 도메인이 다르면 브라우져가 요청을 차단하므로
-  //! 응답 요청에 헤더를 직접 추가하거나 미들웨어를 이용해 해결
+  //! Browser와 Server의 Domain이 다르면 Browser가 요청을 차단한다. (쿠키 역시 차단)
+  //! 응답 요청에 Access Control Allow Origin 헤더를 직접 추가하거나 미들웨어를 이용해 해결
   cors({
-    origin: true,
+    origin: true, // access-control-allow-origin
+    credentials: true, //* 쿠키도 같이 전달한다. (access-control-allow-credentials)
   }),
 );
 

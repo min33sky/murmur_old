@@ -6,9 +6,47 @@ const { isNotLoggedIn, isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-// 라우터 테스트용
-router.get('/', (req, res) => {
-  res.send('Hello! Murmur Server');
+/**
+ * 로그인 체크
+ * GET /
+ */
+router.get('/', async (req, res, next) => {
+  try {
+    // 로그인 한 유저인지 체크
+    if (req.user) {
+      const fullUser = await User.findOne({
+        where: {
+          id: req.user.id,
+        },
+        attributes: {
+          exclude: ['password'],
+        },
+        include: [
+          {
+            model: Post,
+            attributes: ['id'], // 자원을 줄이기 위해 필요한 값만 보낸다.
+          },
+          {
+            model: User,
+            as: 'Followers',
+            attributes: ['id'],
+          },
+          {
+            model: User,
+            as: 'Followings',
+            attributes: ['id'],
+          },
+        ],
+      });
+      res.status(201).json(fullUser);
+    } else {
+      res.status(201).json(null);
+    }
+    // 로그인 확인 후 데이터 보내기
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 /**
@@ -29,16 +67,20 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
       return res.status(401).send(loginFailureInfo.message);
     }
 
-    //? 서비스 로그인뿐만 아니라 Passport 자체 로그인까지 성공해야 로그인이 완료
-    //* passport.serializeUser()가 호출된다.
+    /**
+     * ? 서비스 로그인뿐만 아니라 Passport 자체 로그인까지 성공해야 로그인이 완료
+     * * passport.serializeUser()가 호출된다.
+     */
     return req.login(user, async (loginErr) => {
       if (loginErr) {
         console.error(loginErr);
         return next(loginErr);
       }
 
-      //* 게시물 정보와 유저 정보를 조인
-      //? Post는 hasMany 관계이므로 Posts 프로퍼티가 생성
+      /**
+       * * 게시물 정보와 유저 정보를 조인
+       * ? Post는 hasMany 관계이므로 Posts 프로퍼티가 생성
+       */
       const fullUserWithoutPassword = await User.findOne({
         where: {
           id: user.id,
@@ -49,14 +91,17 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         include: [
           {
             model: Post,
+            attributes: ['id'],
           },
           {
             model: User,
             as: 'Followers',
+            attributes: ['id'],
           },
           {
             model: User,
             as: 'Followings',
+            attributes: ['id'],
           },
         ],
       });
@@ -64,7 +109,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
       // res.setHeader()로 세션 쿠키가 설정된다.
       return res.status(200).json(fullUserWithoutPassword);
     });
-  })(req, res, next); //? express에서 미들웨어 확장의 예
+  })(req, res, next); // ? express에서 미들웨어 확장의 예
 });
 
 /**

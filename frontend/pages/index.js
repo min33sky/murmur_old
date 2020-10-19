@@ -4,6 +4,7 @@ import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 
 /**
  * 시작 페이지
@@ -13,8 +14,12 @@ const Home = () => {
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
 
-  // Load Posts
   useEffect(() => {
+    // 로그인 체크
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    // 게시글 불러오기
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });

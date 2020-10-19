@@ -1,4 +1,4 @@
-import shortid from 'shortid';
+// import shortid from 'shortid';
 import produce from 'immer';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from './post';
 
@@ -29,6 +29,11 @@ export const FOLLOW_FAILURE = 'user/FOLLOW_FAILURE';
 export const UNFOLLOW_REQUEST = 'user/UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'user/UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'user/UNFOLLOW_FAILURE';
+
+// 로그인 유지 체크
+export const LOAD_MY_INFO_REQUEST = 'user/LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'user/LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'user/LOAD_MY_INFO_FAILURE';
 
 //----------------------------------------------------------------------------
 //* Action Function
@@ -94,6 +99,9 @@ const initialState = {
   changeNicknameError: null,
   followLoding: false,
   unfollowLoding: false,
+  loadMyInfoLoading: false,
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
   me: null, // 로그인 한 사용자 정보
   // signedUpData: {}, // 가입 요청 데이터
   // loginData: [], // 로그인 요청 데이터
@@ -178,7 +186,6 @@ const reducer = (state = initialState, action) =>
 
       case FOLLOW_FAILURE:
         draft.followLoading = false;
-        draft.followDone = false;
         draft.loginError = action.payload;
         break;
 
@@ -196,8 +203,25 @@ const reducer = (state = initialState, action) =>
 
       case UNFOLLOW_FAILURE:
         draft.unfollowLoading = false;
-        draft.unfollowDone = false;
         draft.loginError = action.payload;
+        break;
+
+      // 로그인 한 유저인지 확인
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoDone = false;
+        draft.loadMyInfoError = null;
+        break;
+
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoDone = true;
+        draft.me = action.payload;
+        break;
+
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.payload;
         break;
 
       // POST 리듀서에서 나오는 액션 처리
