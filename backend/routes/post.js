@@ -10,19 +10,20 @@ const { Post, Comment, Image, User } = require('../models');
  */
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    // DB에 저장
+    // 1. DB에 저장
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
 
+    // 2. 게시물과 관련된 정보들을 묶어서 응답한다.
     const fullPost = await Post.findOne({
       where: {
         id: post.id,
       },
       include: [
         {
-          model: Image,
+          model: Image, // 게시물에 포함된 이미지
         },
         {
           model: Comment,
@@ -34,7 +35,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
           ],
         },
         {
-          model: User,
+          model: User, // 게시물 작성자
           attributes: ['id', 'nickname'],
         },
       ],
@@ -84,6 +85,63 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
     });
 
     return res.status(200).json(fullComment);
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+/**
+ * 게시물 좋아요
+ * PATCH /:postId/like
+ */
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+    });
+
+    if (!post) {
+      return res.status(403).send('해당 게시물이 없습니다.');
+    }
+
+    // 좋아요 관계 설정
+    await post.addLikers(req.user.id);
+
+    return res.status(200).json({
+      UserId: req.user.id,
+      PostId: post.id,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+/**
+ * 게시물 좋아요 취소
+ * DELETE /:postId/like
+ */
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+    });
+
+    if (!post) {
+      return res.status(403).send('해당 게시물이 없습니다.');
+    }
+
+    await post.removeLikers(req.user.id);
+
+    return res.status(200).json({
+      UserId: req.user.id,
+      PostId: post.id,
+    });
   } catch (error) {
     console.error(error);
     return next(error);

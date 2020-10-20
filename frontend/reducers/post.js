@@ -9,6 +9,7 @@ import faker from 'faker';
 export const ADD_POST_REQUEST = 'post/ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'post/ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'post/ADD_POST_FAILURE';
+
 export const ADD_COMMENT_REQUEST = 'post/ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'post/ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'post/ADD_COMMENT_FAILURE';
@@ -20,6 +21,14 @@ export const LOAD_POSTS_FAILURE = 'post/LOAD_POSTS_FAILURE';
 export const REMOVE_POST_REQUEST = 'post/REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'post/REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'post/REMOVE_POST_FAILURE';
+
+export const LIKE_POST_REQUEST = 'post/LIKE_POST_REQUEST';
+export const LIKE_POST_SUCCESS = 'post/LIKE_POST_SUCCESS';
+export const LIKE_POST_FAILURE = 'post/LIKE_POST_FAILURE';
+
+export const UNLIKE_POST_REQUEST = 'post/UNLIKE_POST_REQUEST';
+export const UNLIKE_POST_SUCCESS = 'post/UNLIKE_POST_SUCCESS';
+export const UNLIKE_POST_FAILURE = 'post/UNLIKE_POST_FAILURE';
 
 // ? User Reducer의 업데이트를 위한 액션 타입
 // ? 로그인 한 유저의 게시물 수를 업데이트
@@ -117,6 +126,12 @@ const initialState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
+  unlikePostLoading: false,
+  unlikePostDone: false,
+  unlikePostError: null,
 };
 
 // Post Reducer
@@ -176,6 +191,47 @@ const reducer = (state = initialState, action) =>
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;
         draft.removePostError = action.payload;
+        break;
+
+      // 좋아요
+      case LIKE_POST_REQUEST:
+        draft.likePostLoading = true;
+        draft.likePostDone = false;
+        draft.likePostError = null;
+        break;
+
+      case LIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((p) => p.id === action.payload.PostId);
+        post.Likers.push({ id: action.payload.UserId });
+        draft.likePostLoading = false;
+        draft.likePostDone = true;
+        break;
+      }
+
+      case LIKE_POST_FAILURE:
+        draft.likePostLoading = false;
+        draft.likePostError = action.payload;
+        break;
+
+      // 좋아요 취소
+      case UNLIKE_POST_REQUEST: {
+        draft.unlikePostLoading = true;
+        draft.unlikePostDone = false;
+        draft.unlikePostError = null;
+        break;
+      }
+
+      case UNLIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((p) => p.id === action.payload.PostId);
+        post.Likers = post.Likers.filter((p) => p.id !== action.payload.UserId);
+        draft.unlikePostLoading = false;
+        draft.unlikePostDone = true;
+        break;
+      }
+
+      case UNLIKE_POST_FAILURE:
+        draft.unlikePostLoading = false;
+        draft.unlikePostError = action.payload;
         break;
 
       // 댓글 관련

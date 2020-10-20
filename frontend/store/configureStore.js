@@ -12,10 +12,10 @@ import rootSaga from '../sagas';
 const configureStore = (context) => {
   console.log(context);
   const sagaMiddleware = createSagaMiddleware(); // redux-saga
-  const middlewares = [logger, sagaMiddleware];
+  const middlewares = [sagaMiddleware];
   const enhancer =
     process.env.NODE_ENV === 'development'
-      ? composeWithDevTools(applyMiddleware(...middlewares))
+      ? composeWithDevTools(applyMiddleware(logger, ...middlewares))
       : compose(applyMiddleware(...middlewares));
 
   const store = createStore(reducer, enhancer);

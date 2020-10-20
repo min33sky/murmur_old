@@ -15,6 +15,12 @@ import {
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
+  LIKE_POST_REQUEST,
+  UNLIKE_POST_REQUEST,
+  LIKE_POST_FAILURE,
+  UNLIKE_POST_SUCCESS,
+  UNLIKE_POST_FAILURE,
+  LIKE_POST_SUCCESS,
 } from '../reducers/post';
 
 function addPostApi(text) {
@@ -104,6 +110,60 @@ function* addComment(action) {
   }
 }
 
+function likePostApi(postId) {
+  return axios.patch(`/post/${postId}/like`);
+}
+
+/**
+ * 게시물 좋아요 기능
+ * @param {Object} action 좋아요 액션
+ */
+function* likePost(action) {
+  try {
+    const response = yield call(likePostApi, action.payload);
+
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    put({
+      type: LIKE_POST_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
+function unlikePostApi(postId) {
+  return axios.delete(`/post/${postId}/like`);
+}
+
+/**
+ * 게시물 좋아요 취소 기능
+ * @param {Object} action 좋아요 취소 액션
+ */
+function* unlikePost(action) {
+  try {
+    const response = yield call(unlikePostApi, action.payload);
+
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    put({
+      type: UNLIKE_POST_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
+//----------------------------------------------------------------------------
+//* Watch
+//----------------------------------------------------------------------------
+
 function* watchAddPost() {
   /**
    *? takeLatest:
@@ -126,11 +186,21 @@ function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+
+function* watchUnlikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
     fork(watchLoadPosts),
+    fork(watchLikePost),
+    fork(watchUnlikePost),
   ]);
 }

@@ -45,13 +45,13 @@ function* login(action) {
   }
 }
 
-// function logOutApi(data) {
-//   return axios.post('/logout', data);
-// }
+function logOutApi() {
+  return axios.post('/user/logout');
+}
 
 function* logout() {
   try {
-    // yield call(logOutApi, action.payload);
+    yield call(logOutApi);
     yield put({
       type: LOG_OUT_SUCCESS,
     });

@@ -7,12 +7,12 @@ const { isNotLoggedIn, isLoggedIn } = require('./middlewares');
 const router = express.Router();
 
 /**
- * 로그인 체크
+ * 로그인 상태 체크
  * GET /
  */
 router.get('/', async (req, res, next) => {
   try {
-    // 로그인 한 유저인지 체크
+    // 로그인 한 유저인지 체크 (비직렬화를 거쳐서 req.user에 유저 정보가 들어있음)
     if (req.user) {
       const fullUser = await User.findOne({
         where: {
@@ -23,16 +23,16 @@ router.get('/', async (req, res, next) => {
         },
         include: [
           {
-            model: Post,
+            model: Post, // 작성한 게시물
             attributes: ['id'], // 자원을 줄이기 위해 필요한 값만 보낸다.
           },
           {
-            model: User,
+            model: User, // 팔로워 정보
             as: 'Followers',
             attributes: ['id'],
           },
           {
-            model: User,
+            model: User, // 팔로잉 정보
             as: 'Followings',
             attributes: ['id'],
           },
@@ -42,7 +42,6 @@ router.get('/', async (req, res, next) => {
     } else {
       res.status(201).json(null);
     }
-    // 로그인 확인 후 데이터 보내기
   } catch (error) {
     console.error(error);
     next(error);
@@ -142,6 +141,8 @@ router.post('/', isNotLoggedIn, async (req, res, next) => {
       nickname: req.body.nickname,
     });
 
+    // TODO: 회원 가입 후 바로 로그인 하기
+
     return res.status(201).send('회원 가입 성공');
   } catch (error) {
     console.error(error);
@@ -156,7 +157,7 @@ router.post('/', isNotLoggedIn, async (req, res, next) => {
 router.post('/logout', isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
-  res.status(200).send('Logout Complete');
+  res.send('ok');
 });
 
 /**

@@ -12,7 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import PostImages from '../PostImages';
 import CommentForm from '../CommentForm';
 import PostCardContent from '../PostCardContent';
-import { removePostRequestAction } from '../../reducers/post';
+import {
+  LIKE_POST_REQUEST,
+  removePostRequestAction,
+  UNLIKE_POST_REQUEST,
+} from '../../reducers/post';
 import FollowButton from '../FollowButton';
 
 /**
@@ -23,16 +27,27 @@ function PostCard({ post }) {
   const dispatch = useDispatch();
 
   const { me } = useSelector((state) => state.user);
-  const id = me && me.id;
+  const id = me?.id;
   const { removePostLoading } = useSelector((state) => state.post);
-  const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const liked = post.Likers.find((user) => user.id === id);
 
   //-------------------------------------------------------------------
   //* Handler
   //-------------------------------------------------------------------
-  const onToggleLikes = useCallback(() => {
-    setLiked((prev) => !prev);
+
+  const onLikePost = useCallback(() => {
+    dispatch({
+      type: LIKE_POST_REQUEST,
+      payload: post.id,
+    });
+  }, []);
+
+  const onUnlikePost = useCallback(() => {
+    dispatch({
+      type: UNLIKE_POST_REQUEST,
+      payload: post.id,
+    });
   }, []);
 
   const onToggleComment = useCallback(() => {
@@ -51,12 +66,17 @@ function PostCard({ post }) {
         actions={[
           <RetweetOutlined key='retweet' />,
 
+          // 좋아요
           liked ? (
-            <HeartTwoTone key='heart' twoToneColor='red' onClick={onToggleLikes} />
+            <HeartTwoTone key='heart' twoToneColor='red' onClick={onUnlikePost} />
           ) : (
-            <HeartOutlined key='heart' onClick={onToggleLikes} />
+            <HeartOutlined key='heart' onClick={onLikePost} />
           ),
+
+          // 댓글창 열기
           <MessageOutlined key='comment' onClick={onToggleComment} />,
+
+          // 추가 기능
           <Popover
             key='more'
             content={
@@ -120,6 +140,7 @@ PostCard.propTypes = {
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
+    Likers: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
 };
 
