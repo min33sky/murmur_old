@@ -162,7 +162,28 @@ router.post('/logout', isLoggedIn, (req, res) => {
 
 /**
  * 닉네임 변경
+ * PATCH /nickname
  */
-router.patch('/nickname', (req, res) => {});
+router.patch('/nickname', async (req, res, next) => {
+  try {
+    await User.update(
+      {
+        nickname: req.body.nickname,
+      },
+      {
+        where: {
+          id: req.user.id,
+        },
+      },
+    );
+
+    return res.status(200).json({
+      nickname: req.body.nickname,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
 
 module.exports = router;

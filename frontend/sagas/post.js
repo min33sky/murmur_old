@@ -70,12 +70,21 @@ function* loadPosts() {
   }
 }
 
+function removePostApi(postId) {
+  return axios.delete(`/post/${postId}`);
+}
+
+/**
+ * 게시물 삭제
+ * @param {Object} action 게시물 삭제 액션
+ */
 function* removePost(action) {
   try {
-    yield delay(1000);
+    const response = yield call(removePostApi, action.payload);
+
     yield put({
       type: REMOVE_POST_SUCCESS,
-      payload: action.payload,
+      payload: response.data,
     });
 
     yield put({

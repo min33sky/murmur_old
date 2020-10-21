@@ -161,14 +161,22 @@ const reducer = (state = initialState, action) =>
         draft.signUpError = action.payload;
         break;
 
-      // TODO: 미완성
+      // 닉네임 변경
       case CHANGE_NICKNAME_REQUEST:
+        draft.changeNicknameLoading = true;
+        draft.changeNicknameDone = false;
+        draft.changeNicknameError = null;
         break;
 
       case CHANGE_NICKNAME_SUCCESS:
+        draft.me.nickname = action.payload.nickname;
+        draft.changeNicknameLoading = false;
+        draft.changeNicknameDone = true;
         break;
 
       case CHANGE_NICKNAME_FAILURE:
+        draft.changeNicknameLoading = false;
+        draft.changeNicknameError = action.payload;
         break;
 
       // Follow 관련

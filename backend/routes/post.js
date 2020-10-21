@@ -49,6 +49,28 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * 게시물 삭제
+ * DELETE /:postId
+ */
+router.delete('/:postId', isLoggedIn, async (req, res, next) => {
+  try {
+    await Post.destroy({
+      where: {
+        id: parseInt(req.params.postId, 10), // 게시물 번호
+        UserId: req.user.id, // 작성자
+      },
+    });
+
+    return res.status(200).json({
+      postId: parseInt(req.params.postId, 10),
+    });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+/**
  * 댓글 등록
  * POST /:postId/comment
  */
