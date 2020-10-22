@@ -30,6 +30,10 @@ export const UNLIKE_POST_REQUEST = 'post/UNLIKE_POST_REQUEST';
 export const UNLIKE_POST_SUCCESS = 'post/UNLIKE_POST_SUCCESS';
 export const UNLIKE_POST_FAILURE = 'post/UNLIKE_POST_FAILURE';
 
+export const UPLOAD_IMAGES_REQUEST = 'post/UPLOAD_IMAGES_REQUEST';
+export const UPLOAD_IMAGES_SUCCESS = 'post/UPLOAD_IMAGES_SUCCESS';
+export const UPLOAD_IMAGES_FAILURE = 'post/UPLOAD_IMAGES_FAILURE';
+
 // ? User Reducer의 업데이트를 위한 액션 타입
 // ? 로그인 한 유저의 게시물 수를 업데이트
 export const ADD_POST_TO_ME = 'post/ADD_POST_TO_ME';
@@ -132,6 +136,9 @@ const initialState = {
   unlikePostLoading: false,
   unlikePostDone: false,
   unlikePostError: null,
+  uploadImagesLoading: false,
+  uploadImagesDone: false,
+  uploadImagesError: null,
 };
 
 // Post Reducer
@@ -252,6 +259,23 @@ const reducer = (state = initialState, action) =>
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
         draft.addPostError = action.payload;
+        break;
+
+      case UPLOAD_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+
+      case UPLOAD_IMAGES_SUCCESS:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        draft.imagePaths = action.payload;
+        break;
+
+      case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.payload;
         break;
 
       default:

@@ -21,6 +21,8 @@ import {
   UNLIKE_POST_SUCCESS,
   UNLIKE_POST_FAILURE,
   LIKE_POST_SUCCESS,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
 } from '../reducers/post';
 
 function addPostApi(text) {
@@ -169,6 +171,30 @@ function* unlikePost(action) {
   }
 }
 
+function uploadImageApi(images) {
+  return axios.post('/post/images', images); // multer에서 처리하므로 JSON 형식으로 보내지 않는다. {key : value}
+}
+
+/**
+ * 이미지 업로드
+ * @param {Object} action 이미지 업로드 액션
+ */
+function* uploadImage(action) {
+  try {
+    const response = yield call(uploadImageApi, action.payload);
+
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+    });
+  }
+}
+
 //----------------------------------------------------------------------------
 //* Watch
 //----------------------------------------------------------------------------
@@ -203,6 +229,10 @@ function* watchUnlikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
+function* watchUploadImage() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImage);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -211,5 +241,6 @@ export default function* postSaga() {
     fork(watchLoadPosts),
     fork(watchLikePost),
     fork(watchUnlikePost),
+    fork(watchUploadImage),
   ]);
 }

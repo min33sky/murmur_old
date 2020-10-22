@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPostRequestAction } from '../../reducers/post';
+import { addPostRequestAction, UPLOAD_IMAGES_REQUEST } from '../../reducers/post';
 import useInput from '../../hooks/useInput';
 
 const { TextArea } = Input;
@@ -26,13 +26,26 @@ function PostForm() {
     dispatch(addPostRequestAction(text));
   }, [dispatch, text]);
 
+  const onChangeImages = useCallback((e) => {
+    console.log('images', e.target.files);
+    const imageFormData = new FormData();
+    [].forEach.call(e.target.files, (file) => {
+      imageFormData.append('image', file);
+    });
+    // 이미지 업로드
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+      payload: imageFormData,
+    });
+  }, []);
+
   /**
    * 이미지 등록 버튼 이벤트 리스너
    * ? ref를 클릭해서 이미지를 등록시킨다.
    */
   const onImageButtonClick = useCallback(() => {
     imageInput.current.click();
-  }, []);
+  }, [imageInput.current]);
 
   return (
     <Form style={{ margin: '10px 0 20px' }} encType='multipart/form-data' onFinish={onSubmit}>
@@ -44,7 +57,14 @@ function PostForm() {
       />
 
       <div>
-        <input type='file' multiple hidden ref={imageInput} />
+        <input
+          type='file'
+          name='image'
+          multiple
+          hidden
+          ref={imageInput}
+          onChange={onChangeImages}
+        />
         <Button onClick={onImageButtonClick}>이미지 업로드</Button>
         <Button type='primary' htmlType='submit' style={{ float: 'right' }}>
           등록
