@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, put, delay, call } from 'redux-saga/effects';
+import { all, fork, takeLatest, put, delay, call, actionChannel } from 'redux-saga/effects';
 import axios from 'axios';
 import {
   LOG_IN_REQUEST,
@@ -22,6 +22,15 @@ import {
   CHANGE_NICKNAME_FAILURE,
   CHANGE_NICKNAME_SUCCESS,
   CHANGE_NICKNAME_REQUEST,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_FAILURE,
+  REMOVE_FOLLOWER_REQUEST,
+  REMOVE_FOLLOWER_FAILURE,
+  REMOVE_FOLLOWER_SUCCESS,
 } from '../reducers/user';
 
 function loginApi(data) {
@@ -90,12 +99,20 @@ function* signUp(action) {
   }
 }
 
+function followApi(userId) {
+  return axios.patch(`/user/${userId}/follow`);
+}
+
+/**
+ * 팔로우
+ * @param {Object} action 팔로우 액션
+ */
 function* follow(action) {
   try {
-    yield delay(1000);
+    const response = yield call(followApi, action.payload);
     yield put({
       type: FOLLOW_SUCCESS,
-      payload: action.payload,
+      payload: response.data,
     });
   } catch (error) {
     yield put({
@@ -105,12 +122,21 @@ function* follow(action) {
   }
 }
 
+function unfollowApi(userId) {
+  return axios.delete(`/user/${userId}/follow`);
+}
+
+/**
+ * 언팔로우
+ * @param {Object}} action 언팔로우 액션
+ */
 function* unfollow(action) {
   try {
-    yield delay(1000);
+    const response = yield call(unfollowApi, action.payload);
+
     yield put({
       type: UNFOLLOW_SUCCESS,
-      payload: action.payload,
+      payload: response.data,
     });
   } catch (error) {
     yield put({
@@ -168,6 +194,79 @@ function* changeNickname(action) {
   }
 }
 
+function loadFollowersApi() {
+  return axios.get('/user/followers');
+}
+
+/**
+ * Follower 목록 가져오기
+ */
+function* loadFollowers() {
+  try {
+    const response = yield call(loadFollowersApi);
+
+    yield put({
+      type: LOAD_FOLLOWERS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
+function loadFollowingsApi() {
+  return axios.get('/user/followings');
+}
+
+/**
+ * Followings 목록 가져오기
+ */
+function* loadFollowings() {
+  try {
+    const response = yield call(loadFollowingsApi);
+
+    yield put({
+      type: LOAD_FOLLOWINGS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
+function removeFollowerApi(userId) {
+  return axios.delete(`/user/follower/${userId}`);
+}
+
+/**
+ * 팔로워 삭제 (프로필 페이지)
+ * @param {Object} action 팔로워 삭제 액션
+ */
+function* removeFollower(action) {
+  try {
+    const response = yield call(removeFollowerApi, action.payload);
+
+    yield put({
+      type: REMOVE_FOLLOWER_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
 function* watchLogin() {
   yield takeLatest(LOG_IN_REQUEST, login);
 }
@@ -196,6 +295,18 @@ function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
 
+function* watchLoadFollowers() {
+  yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+function* watchLoadFollowings() {
+  yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+
+function* watchRemoveFollower() {
+  yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
@@ -205,5 +316,8 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchLoadMyInfo),
     fork(watchChangeNickname),
+    fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
+    fork(watchRemoveFollower),
   ]);
 }

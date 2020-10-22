@@ -33,9 +33,9 @@ router.get('/', async (req, res, next) => {
           attributes: ['id', 'nickname'],
         },
         {
-          model: User,
+          model: User, // 좋아요 누른 사람
           as: 'Likers',
-          attributes: ['id', 'nickname'],
+          attributes: ['id'],
         },
       ],
     });

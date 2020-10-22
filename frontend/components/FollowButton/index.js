@@ -24,6 +24,11 @@ function FollowButton({ post }) {
     }
   }, [isFollowing]);
 
+  //* 자신의 글은 팔로우 버튼을 보여주지 않는다.
+  if (post.User.id === me.id) {
+    return null;
+  }
+
   return (
     <Button loading={followLoading || unfollowLoading} onClick={onButtonClick}>
       {isFollowing ? 'Unfollow' : 'Follow'}
@@ -33,8 +38,16 @@ function FollowButton({ post }) {
 
 FollowButton.propTypes = {
   post: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    User: PropTypes.object,
+    id: PropTypes.number,
+    User: PropTypes.shape({
+      nickname: PropTypes.string,
+      id: PropTypes.number,
+    }),
+    content: PropTypes.string,
+    createdAt: PropTypes.string,
+    Comments: PropTypes.arrayOf(PropTypes.object),
+    Images: PropTypes.arrayOf(PropTypes.object),
+    Likers: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
 };
 

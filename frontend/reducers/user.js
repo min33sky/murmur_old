@@ -30,6 +30,18 @@ export const UNFOLLOW_REQUEST = 'user/UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'user/UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'user/UNFOLLOW_FAILURE';
 
+export const LOAD_FOLLOWERS_REQUEST = 'user/LOAD_FOLLOWERS_REQUEST';
+export const LOAD_FOLLOWERS_SUCCESS = 'user/LOAD_FOLLOWERS_SUCCESS';
+export const LOAD_FOLLOWERS_FAILURE = 'user/LOAD_FOLLOWERS_FAILURE';
+
+export const LOAD_FOLLOWINGS_REQUEST = 'user/LOAD_FOLLOWINGS_REQUEST';
+export const LOAD_FOLLOWINGS_SUCCESS = 'user/LOAD_FOLLOWINGS_SUCCESS';
+export const LOAD_FOLLOWINGS_FAILURE = 'user/LOAD_FOLLOWINGS_FAILURE';
+
+export const REMOVE_FOLLOWER_REQUEST = 'user/REMOVE_FOLLOWER_REQUEST';
+export const REMOVE_FOLLOWER_SUCCESS = 'user/REMOVE_FOLLOWER_SUCCESS';
+export const REMOVE_FOLLOWER_FAILURE = 'user/REMOVE_FOLLOWER_FAILURE';
+
 // 로그인 유지 체크
 export const LOAD_MY_INFO_REQUEST = 'user/LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'user/LOAD_MY_INFO_SUCCESS';
@@ -98,10 +110,23 @@ const initialState = {
   changeNicknameDone: false,
   changeNicknameError: null,
   followLoding: false,
+  followDone: false,
+  followError: null,
   unfollowLoding: false,
+  unfollowDone: false,
+  unfollowError: null,
   loadMyInfoLoading: false,
   loadMyInfoDone: false,
   loadMyInfoError: null,
+  loadFollowersLoading: false,
+  loadFollowersDone: false,
+  loadFollowersError: null,
+  loadFollowinsLoading: false,
+  loadFollowinsDone: false,
+  loadFollowinsError: null,
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
   me: null, // 로그인 한 사용자 정보
   // signedUpData: {}, // 가입 요청 데이터
   // loginData: [], // 로그인 요청 데이터
@@ -189,7 +214,7 @@ const reducer = (state = initialState, action) =>
       case FOLLOW_SUCCESS:
         draft.followLoading = false;
         draft.followDone = true;
-        draft.me.Followings.push({ id: action.payload });
+        draft.me.Followings.push({ id: action.payload.id });
         break;
 
       case FOLLOW_FAILURE:
@@ -206,7 +231,7 @@ const reducer = (state = initialState, action) =>
       case UNFOLLOW_SUCCESS:
         draft.unfollowLoading = false;
         draft.unfollowDone = true;
-        draft.me.Followings = draft.me.Followings.filter((user) => user.id !== action.payload);
+        draft.me.Followings = draft.me.Followings.filter((user) => user.id !== action.payload.id);
         break;
 
       case UNFOLLOW_FAILURE:
@@ -230,6 +255,58 @@ const reducer = (state = initialState, action) =>
       case LOAD_MY_INFO_FAILURE:
         draft.loadMyInfoLoading = false;
         draft.loadMyInfoError = action.payload;
+        break;
+
+      case LOAD_FOLLOWERS_REQUEST:
+        draft.loadFollowersLoading = true;
+        draft.loadFollowersDone = false;
+        draft.loadFollowersError = null;
+        break;
+
+      case LOAD_FOLLOWERS_SUCCESS:
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersDone = true;
+        draft.me.Followers = action.payload;
+        break;
+
+      case LOAD_FOLLOWERS_FAILURE:
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersError = action.payload;
+        break;
+
+      case LOAD_FOLLOWINGS_REQUEST:
+        draft.loadFollowingsLoading = true;
+        draft.loadFollowingsDone = false;
+        draft.loadFollowingsError = null;
+        break;
+
+      case LOAD_FOLLOWINGS_SUCCESS:
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsDone = true;
+        draft.me.Followings = action.payload;
+        break;
+
+      case LOAD_FOLLOWINGS_FAILURE:
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsError = action.payload;
+        break;
+
+      // 프로필 페이지에서 팔로워 삭제
+      case REMOVE_FOLLOWER_REQUEST:
+        draft.removeFollowerLoading = true;
+        draft.removeFollowerDone = false;
+        draft.removeFollowerError = null;
+        break;
+
+      case REMOVE_FOLLOWER_SUCCESS:
+        draft.me.Followers = draft.me.Followers.filter((user) => user.id !== action.payload.id);
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerDone = true;
+        break;
+
+      case REMOVE_FOLLOWER_FAILURE:
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerError = action.payload;
         break;
 
       // POST 리듀서에서 나오는 액션 처리
