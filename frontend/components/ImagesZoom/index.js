@@ -12,15 +12,6 @@ import { CloseBtn, Header, Global, SliderWrapper, ImgWrapper, Indicator, Overlay
 function ImagesZoom({ images, onClose }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // 슬라이더 설정
-  const settings = {
-    // dots: true,
-    infinite: true,
-    // speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
-
   return (
     <Overlay>
       <Global />
@@ -35,11 +26,13 @@ function ImagesZoom({ images, onClose }) {
           initialSlide={1}
           // 슬라이드가 이동하기 전에 싱행되는 함수
           beforeChange={(slide) => setCurrentSlide(slide)}
-          {...settings}
+          infinite
+          slidesToShow={1}
+          slidesToScroll={1}
         >
           {images.map((v) => (
             <ImgWrapper key={v.src}>
-              <img src={v.src} alt={v.src} />
+              <img src={`http://localhost:3065/${v.src}`} alt={v.src} />
             </ImgWrapper>
           ))}
         </Slider>

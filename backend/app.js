@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
+const path = require('path');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -57,6 +58,8 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+// ? static 미들웨어로 서버쪽 폴더구조를 클라이언트에 노출하지 않으므로 보안이 강화된다.
+app.use('/', express.static(path.join(__dirname, 'uploads'))); // Image url
 app.use(express.json()); // JSON Parsing
 app.use(express.urlencoded({ extended: true })); // Form Data Parsing
 

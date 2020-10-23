@@ -34,6 +34,8 @@ export const UPLOAD_IMAGES_REQUEST = 'post/UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'post/UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'post/UPLOAD_IMAGES_FAILURE';
 
+export const CANCEL_UPLOAD_IMAGE = 'post/CANCEL_UPLOAD_IMAGE'; // 이미지 등록 취소
+
 // ? User Reducer의 업데이트를 위한 액션 타입
 // ? 로그인 한 유저의 게시물 수를 업데이트
 export const ADD_POST_TO_ME = 'post/ADD_POST_TO_ME';
@@ -42,11 +44,6 @@ export const REMOVE_POST_OF_ME = 'post/REMOVE_POST_OF_ME';
 //----------------------------------------------------------------------------
 //* Action Function
 //----------------------------------------------------------------------------
-
-export const addPostRequestAction = (data) => ({
-  type: ADD_POST_REQUEST,
-  payload: data,
-});
 
 export const addCommentRequestAction = (data) => ({
   type: ADD_COMMENT_REQUEST,
@@ -145,6 +142,11 @@ const initialState = {
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      // 이미지 업로드 취소
+      case CANCEL_UPLOAD_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((image, index) => index !== action.payload);
+        break;
+
       // 게시물 관련
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
@@ -174,6 +176,7 @@ const reducer = (state = initialState, action) =>
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.mainPosts.unshift(action.payload);
+        draft.imagePaths = [];
         break;
 
       case ADD_POST_FAILURE:

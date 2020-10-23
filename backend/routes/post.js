@@ -16,16 +16,62 @@ try {
 }
 
 /**
+ ** 이미지는 서버에서 지울 필요없다. (머신러닝 등으로 활용 가능)
+ ** 최종적으로는 이미지 파일은 S3같은 클라우드에 저장되고 DB에는 이미지 파일 주소만 저장된다.
+ */
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, 'uploads'); // uploads 폴더
+    },
+    filename(req, file, done) {
+      // ex) messi.png
+      const ext = path.extname(file.originalname); // .png (확장자 추출)
+      const basename = path.basename(file.originalname, ext); // messi
+      done(null, `${basename}_${new Date().getTime()}${ext}`); // messi_1245112414.png
+    },
+  }),
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB
+  },
+});
+
+/**
+ * 이미지 업로드
+ * POST /images
+ */
+router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
+  console.log(req.files);
+  return res.status(200).json(req.files.map((v) => v.filename));
+});
+
+/**
  * 게시물 등록
+ *? 파일을 업로드하는게 아니라 FormData로 요청되는
+ *? 이미지 주소, 글 내용 둘 다 텍스트이므로 none() 사용
  * POST /post
  */
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     // 1. DB에 저장
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+
+    if (req.body.image) {
+      // 이미지 개수에 따라 처리
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image })),
+        );
+        // 관계 설정
+        await post.addImages(images);
+      } else {
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
 
     // 2. 게시물과 관련된 정보들을 묶어서 응답한다.
     const fullPost = await Post.findOne({
@@ -184,32 +230,6 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
     console.error(error);
     return next(error);
   }
-});
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, 'uploads'); // uploads 폴더
-    },
-    filename(req, file, done) {
-      // messi.png
-      const ext = path.extname(file.originalname); // .png (확장자 추출)
-      const basename = path.basename(file.originalname, ext); // messi
-      done(null, basename + new Date().getTime() + ext); // messi1245112414.png
-    },
-  }),
-  limits: {
-    fileSize: 20 * 1024 * 1024, // 20MB
-  },
-});
-
-/**
- * 이미지 업로드
- * POST /images
- */
-router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
-  console.log(req.files);
-  return res.status(200).json(req.files.map((v) => v.filename));
 });
 
 module.exports = router;

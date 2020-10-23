@@ -26,7 +26,7 @@ function PostImages({ images }) {
       <>
         <img
           role='presentation' // ? 스크린리더 사용 시 굳이 클릭할 필요 없다는 걸 알려준다
-          src={images[0].src}
+          src={`http://localhost:3065/${images[0].src}`}
           alt={images[0].src}
           onClick={onZoom}
         />
@@ -43,7 +43,7 @@ function PostImages({ images }) {
             display: 'inline-block',
             width: '50%',
           }}
-          src={images[0].src}
+          src={`http://localhost:3065/${images[0].src}`}
           alt={images[0].src}
           onClick={onZoom}
         />
@@ -53,7 +53,7 @@ function PostImages({ images }) {
             display: 'inline-block',
             width: '50%',
           }}
-          src={images[1].src}
+          src={`http://localhost:3065/${images[1].src}`}
           alt={images[1].src}
           onClick={onZoom}
         />
@@ -68,7 +68,7 @@ function PostImages({ images }) {
         <img
           role='presentation'
           style={{ width: '50%' }}
-          src={images[0].src}
+          src={`http://localhost:3065/${images[0].src}`}
           alt={images[0].src}
           onClick={onZoom}
         />

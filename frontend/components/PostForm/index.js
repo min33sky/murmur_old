@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPostRequestAction, UPLOAD_IMAGES_REQUEST } from '../../reducers/post';
+import { ADD_POST_REQUEST, CANCEL_UPLOAD_IMAGE, UPLOAD_IMAGES_REQUEST } from '../../reducers/post';
 import useInput from '../../hooks/useInput';
 
 const { TextArea } = Input;
@@ -16,16 +16,44 @@ function PostForm() {
   const { imagePaths, addPostDone } = useSelector((state) => state.post); // 등록 할 이미지의 주소
 
   useEffect(() => {
-    if (addPostDone) setText('');
+    if (addPostDone) setText(''); // 게시물 등록 후 인풋 초기화
   }, [addPostDone]);
 
   //-------------------------------------------------------------------
   //* Handler
   //-------------------------------------------------------------------
   const onSubmit = useCallback(() => {
-    dispatch(addPostRequestAction(text));
-  }, [dispatch, text]);
+    if (!text || !text.trim()) {
+      alert('글을 입력하세요. 제발');
+      return;
+    }
+    //! 이미지가 없을 땐 FormData를 사용 할 필요는 없다.
+    //* 아래는 이미지 주소와 텍스트를 보내기 때문에 Formdata가 필요없지만
+    //* multer.none()을 사용해보기 위한 코드이다
+    const formData = new FormData();
+    imagePaths.forEach((path) => formData.append('image', path)); // req.body.image
+    formData.append('content', text); // req.body.content
+    dispatch({
+      type: ADD_POST_REQUEST,
+      payload: formData,
+    });
+  }, [text, imagePaths]);
 
+  /**
+   ** 이미지 업로드 취소
+   *? 동기 액션으로 처리 (서버로 갈 필요가 없이 스토어에서 처리)
+   */
+  const onRemoveImage = useCallback(
+    (index) => () => {
+      dispatch({
+        type: CANCEL_UPLOAD_IMAGE,
+        payload: index,
+      });
+    },
+    [],
+  );
+
+  // 업로드 할 이미지 등록
   const onChangeImages = useCallback((e) => {
     console.log('images', e.target.files);
     const imageFormData = new FormData();
@@ -60,6 +88,7 @@ function PostForm() {
         <input
           type='file'
           name='image'
+          key={imagePaths.join()} // ? 같은 이미지를 다시 등록할 때 액션을 디스패치하지 않는 것을 해결
           multiple
           hidden
           ref={imageInput}
@@ -72,11 +101,16 @@ function PostForm() {
       </div>
 
       <div>
-        {imagePaths.map((imagePath) => (
+        {imagePaths.map((imagePath, index) => (
           <div key={imagePath} style={{ display: 'inline-block' }}>
-            <img key={imagePath} style={{ width: '200px' }} alt={imagePath} />
+            <img
+              key={imagePath}
+              style={{ width: '200px' }}
+              alt={imagePath}
+              src={`http://localhost:3065/${imagePath}`}
+            />
             <div>
-              <Button>제거</Button>
+              <Button onClick={onRemoveImage(index)}>제거</Button>
             </div>
           </div>
         ))}

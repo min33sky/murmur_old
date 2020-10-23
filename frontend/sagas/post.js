@@ -25,10 +25,14 @@ import {
   UPLOAD_IMAGES_SUCCESS,
 } from '../reducers/post';
 
-function addPostApi(text) {
-  return axios.post('/post', { content: text });
+function addPostApi(formData) {
+  return axios.post('/post', formData); // FormData(imagePath, text)
 }
 
+/**
+ * 게시물 등록
+ * @param {Object} action 게시물 등록 액션
+ */
 function* addPost(action) {
   try {
     const response = yield call(addPostApi, action.payload);
