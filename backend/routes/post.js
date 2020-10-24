@@ -251,4 +251,102 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
   }
 });
 
+/**
+ * 리트윗
+ * POST /:postId/retweet
+ */
+router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
+  try {
+    /**
+     * 1. 내가 쓴 글 & 내가 쓴 글을 리트윗한 글은 리트윗 금지
+     * 2. 이미 리트윗 한 글은 리트윗 금지
+     */
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+      include: [
+        {
+          model: Post,
+          as: 'Retweet',
+        },
+      ],
+    });
+
+    if (!post) {
+      return res.status(403).send('해당 게시물이 없습니다.');
+    }
+
+    if (post.UserId === req.user.id || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+      return res.status(403).send('자신의 글은 리트윗할 수 없습니다.');
+    }
+
+    const retweetTargetId = post.RetweetId || post.id; // 리트윗한 게시물 || 원본 게시물
+
+    const exPost = await Post.findOne({
+      where: {
+        UserId: req.user.id,
+        RetweetId: retweetTargetId,
+      },
+    });
+
+    if (exPost) {
+      return res.status(403).send('이미 리트윗 한 게시물입니다.');
+    }
+
+    const retweet = await Post.create({
+      UserId: req.user.id,
+      RetweetId: retweetTargetId,
+      content: 'retweet', // ? allowNull이 true이므로 아무 값 작성
+    });
+
+    const retweetWithPrevPost = await Post.findOne({
+      where: {
+        id: retweet.id,
+      },
+      include: [
+        {
+          model: Post,
+          as: 'Retweet',
+          include: [
+            {
+              model: User, // 리트윗한 글의 작성자
+              attributes: ['id', 'nickname'],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: User, // 작성자
+          attributes: ['id', 'nickname'],
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User, // 댓글 작성자
+              attributes: ['id', 'nickname'],
+            },
+          ],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: User, // 좋아요 누른 사람
+          as: 'Likers',
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    return res.status(200).json(retweetWithPrevPost);
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
 module.exports = router;

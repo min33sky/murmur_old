@@ -37,6 +37,19 @@ router.get('/', async (req, res, next) => {
           as: 'Likers',
           attributes: ['id'],
         },
+        {
+          model: Post, // 리트윗한 글
+          as: 'Retweet',
+          include: [
+            {
+              model: User, // 리트윗한 글의 작성자
+              attributes: ['id', 'nickname'],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
       ],
     });
 

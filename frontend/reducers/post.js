@@ -34,6 +34,10 @@ export const UPLOAD_IMAGES_REQUEST = 'post/UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'post/UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'post/UPLOAD_IMAGES_FAILURE';
 
+export const RETWEET_REQUEST = 'post/RETWEET_REQUEST';
+export const RETWEET_SUCCESS = 'post/RETWEET_SUCCESS';
+export const RETWEET_FAILURE = 'post/RETWEET_FAILURE';
+
 export const CANCEL_UPLOAD_IMAGE = 'post/CANCEL_UPLOAD_IMAGE'; // 이미지 등록 취소
 
 // ? User Reducer의 업데이트를 위한 액션 타입
@@ -136,6 +140,9 @@ const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 };
 
 // Post Reducer
@@ -279,6 +286,23 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.payload;
+        break;
+
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break;
+
+      case RETWEET_SUCCESS:
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        draft.mainPosts.unshift(action.payload);
+        break;
+
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false;
+        draft.retweetError = action.payload;
         break;
 
       default:

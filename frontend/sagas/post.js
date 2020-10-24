@@ -23,6 +23,9 @@ import {
   LIKE_POST_SUCCESS,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
+  RETWEET_REQUEST,
+  RETWEET_SUCCESS,
+  RETWEET_FAILURE,
 } from '../reducers/post';
 
 function addPostApi(formData) {
@@ -199,6 +202,31 @@ function* uploadImage(action) {
   }
 }
 
+function retweetApi(postId) {
+  return axios.post(`/post/${postId}/retweet`);
+}
+
+/**
+ * 리트윗
+ * @param {Object} action 리트윗 액션
+ */
+function* retweet(action) {
+  try {
+    const response = yield call(retweetApi, action.payload);
+
+    yield put({
+      type: RETWEET_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: RETWEET_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
 //----------------------------------------------------------------------------
 //* Watch
 //----------------------------------------------------------------------------
@@ -237,6 +265,10 @@ function* watchUploadImage() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImage);
 }
 
+function* watchRetweet() {
+  yield takeLatest(RETWEET_REQUEST, retweet);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -246,5 +278,6 @@ export default function* postSaga() {
     fork(watchLikePost),
     fork(watchUnlikePost),
     fork(watchUploadImage),
+    fork(watchRetweet),
   ]);
 }
