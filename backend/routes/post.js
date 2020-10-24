@@ -267,18 +267,24 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
       },
       include: [
         {
-          model: Post,
+          model: Post, // 리트윗할 글 정보
           as: 'Retweet',
         },
       ],
     });
 
     if (!post) {
-      return res.status(403).send('해당 게시물이 없습니다.');
+      return res.status(403).json({
+        message: '해당 게시물이 없습니다.',
+        postId: parseInt(req.params.postId, 10),
+      });
     }
 
     if (post.UserId === req.user.id || (post.Retweet && post.Retweet.UserId === req.user.id)) {
-      return res.status(403).send('자신의 글은 리트윗할 수 없습니다.');
+      return res.status(403).json({
+        message: '자신의 글은 리트윗할 수 없어요.',
+        postId: parseInt(req.params.postId, 10),
+      });
     }
 
     const retweetTargetId = post.RetweetId || post.id; // 리트윗한 게시물 || 원본 게시물
@@ -291,7 +297,10 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
     });
 
     if (exPost) {
-      return res.status(403).send('이미 리트윗 한 게시물입니다.');
+      return res.status(403).json({
+        message: '이미 리트윗 한 글입니다.',
+        postId: parseInt(req.params.postId, 10),
+      });
     }
 
     const retweet = await Post.create({

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, Popover, Button, Avatar, List, Comment } from 'antd';
 import PropTypes from 'prop-types';
 import {
@@ -29,9 +29,16 @@ function PostCard({ post }) {
 
   const { me } = useSelector((state) => state.user);
   const id = me?.id;
-  const { removePostLoading } = useSelector((state) => state.post);
+  const { removePostLoading, retweetError } = useSelector((state) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const liked = post.Likers.find((user) => user.id === id);
+
+  useEffect(() => {
+    //! 전체 컴포넌트가 아닌 특정 컴포넌트만 경고창이 뜨게한다.
+    if (retweetError && retweetError.postId === post.id) {
+      alert(retweetError.message);
+    }
+  }, [retweetError]);
 
   //-------------------------------------------------------------------
   //* Handler
@@ -81,6 +88,7 @@ function PostCard({ post }) {
         style={{ marginTop: '20px' }}
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
+          // 리트윗
           <RetweetOutlined key='retweet' onClick={onRetweet} />,
 
           // 좋아요
