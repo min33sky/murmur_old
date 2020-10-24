@@ -10,6 +10,8 @@
   },
   "rules": {
     "linebreak-style": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off"
   }
 }

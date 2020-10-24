@@ -6,11 +6,15 @@ import createSagaMiddleware from 'redux-saga';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
 
+// const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
+//   console.log(action);
+//   return next(action);
+// };
+
 /**
  * 스토어 설정 및 생성하는 함수
  */
-const configureStore = (context) => {
-  console.log(context);
+const configureStore = () => {
   const sagaMiddleware = createSagaMiddleware(); // redux-saga
   const middlewares = [sagaMiddleware];
   const enhancer =

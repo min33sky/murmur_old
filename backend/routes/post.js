@@ -5,7 +5,7 @@ const fs = require('fs');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
-const { Post, Comment, Image, User } = require('../models');
+const { Post, Comment, Image, User, Hashtag } = require('../models');
 
 // 업로드 폴더 생성
 try {
@@ -58,6 +58,25 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
       content: req.body.content,
       UserId: req.user.id,
     });
+
+    // 글에서 해시태그 가져오기
+    const hashtag = req.body.content.match(/#[^\s#]+/g);
+
+    if (hashtag) {
+      const result = await Promise.all(
+        hashtag.map((tag) =>
+          //* 중복 해시 태그는 DB에 저장하지 않는다.
+          Hashtag.findOrCreate({
+            where: {
+              name: tag.slice(1).toLowerCase(), // ? 해시태그에는 대소문자 구별을 하지 말자
+            },
+          }),
+        ),
+      );
+      // ? findOrCreate일 때는 2차원 배열로 리턴된다.
+      // ? result 예시 : [[태그이름1. true], [태그이름2, false].....]
+      await post.addHashtags(result.map((item) => item[0]));
+    }
 
     if (req.body.image) {
       // 이미지 개수에 따라 처리

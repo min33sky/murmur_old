@@ -12,13 +12,11 @@ const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 
-const SERVER_PORT = 3065;
+const SERVER_PORT = 3065; // Backend Server Port
 
-// Dotenv 연결
-dotenv.config();
+dotenv.config(); // Dotenv 연결
 
-// Passport 연결
-passportConfig();
+passportConfig(); // Passport 연결
 
 // DB 연결
 db.sequelize
@@ -56,9 +54,11 @@ app.use(
     saveUninitialized: true,
   }),
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
-// ? static 미들웨어로 서버쪽 폴더구조를 클라이언트에 노출하지 않으므로 보안이 강화된다.
+
+// ? static 미들웨어로 서버 쪽 폴더구조를 클라이언트에 노출하지 않으므로 보안이 강화된다.
 app.use('/', express.static(path.join(__dirname, 'uploads'))); // Image url
 app.use(express.json()); // JSON Parsing
 app.use(express.urlencoded({ extended: true })); // Form Data Parsing

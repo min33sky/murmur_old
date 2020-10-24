@@ -58,13 +58,17 @@ function PostCard({ post }) {
     dispatch(removePostRequestAction(post.id));
   }, []);
 
+  const onRetweet = useCallback(() => {
+    alert('준비 중..');
+  }, []);
+
   return (
     <>
       <Card
         style={{ marginTop: '20px' }}
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
-          <RetweetOutlined key='retweet' />,
+          <RetweetOutlined key='retweet' onClick={onRetweet} />,
 
           // 좋아요
           liked ? (
