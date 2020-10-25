@@ -25,16 +25,19 @@ const Home = () => {
     });
   }, []);
 
-  // Infinity Scrolling
+  //* Infinity Scrolling
   useEffect(() => {
     function onScroll() {
       if (
         window.scrollY + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
+        const lastId = mainPosts[mainPosts.length - 1]?.id; // 마지막 글의 id값
+
         if (hasMorePosts && !loadPostsLoading) {
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            payload: lastId,
           });
         }
       }

@@ -164,8 +164,8 @@ const reducer = (state = initialState, action) =>
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        draft.mainPosts = action.payload.concat(draft.mainPosts);
-        draft.hasMorePosts = draft.mainPosts.length < 50; // 50개로 제한
+        draft.mainPosts = draft.mainPosts.concat(action.payload);
+        draft.hasMorePosts = action.payload.length === 10; // 10개씩 불러온다. 10개 이하일 경우 다음엔 로드 금지
         break;
 
       case LOAD_POSTS_FAILURE:

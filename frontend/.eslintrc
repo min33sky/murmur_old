@@ -27,6 +27,7 @@
     "indent": "off",
     "implicit-arrow-linebreak": "off",
     "react/jsx-wrap-multilines": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "operator-linebreak": "off"
   }
 }

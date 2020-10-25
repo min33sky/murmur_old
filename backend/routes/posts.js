@@ -1,14 +1,21 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const { Post, Image, Comment, User } = require('../models');
 
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
   try {
+    const where = {};
+
+    if (parseInt(req.query.lastId, 10)) {
+      where.id = {
+        [Op.lt]: parseInt(req.query.lastId, 10),
+      };
+    }
+
     const posts = await Post.findAll({
-      // where: {
-      //   id: req.body.lastId,
-      // },
+      where,
       limit: 10,
       //! offset: 0, 게시물 추가&삭제 시, 문제가 생기므로 offset 대신 lastId 방식을 사용한다
       order: [

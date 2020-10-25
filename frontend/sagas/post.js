@@ -58,13 +58,17 @@ function* addPost(action) {
   }
 }
 
-function loadPostsApi() {
-  return axios.get('/posts');
+function loadPostsApi(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
-function* loadPosts() {
+/**
+ * 전체 게시물 불러오기
+ * @param {Object} action 게시물들을 불러오는 액션
+ */
+function* loadPosts(action) {
   try {
-    const response = yield call(loadPostsApi);
+    const response = yield call(loadPostsApi, action.payload);
 
     yield put({
       type: LOAD_POSTS_SUCCESS,
