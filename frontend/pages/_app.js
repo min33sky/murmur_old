@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import withReduxSaga from 'next-redux-saga';
 import wrapper from '../store/configureStore';
 import 'antd/dist/antd.css'; // antd css file
 
@@ -23,7 +22,7 @@ Murmur.propTypes = {
   Component: PropTypes.elementType.isRequired,
 };
 
-/*
- * Next에 Redux & Redux-Saga 적용하기
+/**
+ ** Next에 Redux를 적용
  */
-export default wrapper.withRedux(withReduxSaga(Murmur));
+export default wrapper.withRedux(Murmur);

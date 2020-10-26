@@ -34,7 +34,7 @@ function PostCard({ post }) {
   const liked = post.Likers.find((user) => user.id === id);
 
   useEffect(() => {
-    //! 전체 컴포넌트가 아닌 특정 컴포넌트만 경고창이 뜨게한다.
+    //! 전체 포스트카드 컴포넌트가 아닌 특정 컴포넌트만 경고창이 뜨게한다.
     if (retweetError && retweetError.postId === post.id) {
       alert(retweetError.message);
     }

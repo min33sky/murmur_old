@@ -12,6 +12,10 @@ const router = express.Router();
  */
 router.get('/', async (req, res, next) => {
   try {
+    console.log('************');
+    console.log(req.headers); // 쿠키 확인용
+    console.log('************');
+
     // 로그인 한 유저인지 체크 (비직렬화를 거쳐서 req.user에 유저 정보가 들어있음)
     if (req.user) {
       const fullUser = await User.findOne({

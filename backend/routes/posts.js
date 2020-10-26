@@ -4,10 +4,16 @@ const { Post, Image, Comment, User } = require('../models');
 
 const router = express.Router();
 
+/**
+ ** 게시물들 불러오기
+ *? 처음 요청 이후엔 lastId 값 이전의 게시물들을 불러온다.
+ * GET /
+ */
 router.get('/', async (req, res, next) => {
   try {
     const where = {};
 
+    //* lastId 이전 게시물들을 불러오기 위한 조건 설정
     if (parseInt(req.query.lastId, 10)) {
       where.id = {
         [Op.lt]: parseInt(req.query.lastId, 10),
@@ -24,10 +30,10 @@ router.get('/', async (req, res, next) => {
       ],
       include: [
         {
-          model: Image,
+          model: Image, // 이미지
         },
         {
-          model: Comment,
+          model: Comment, // 댓글 정보
           include: [
             {
               model: User, // 댓글 작성자

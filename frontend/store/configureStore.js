@@ -6,13 +6,14 @@ import createSagaMiddleware from 'redux-saga';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
 
+// 로거 미들웨어
 // const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
 //   console.log(action);
 //   return next(action);
 // };
 
 /**
- * 스토어 설정 및 생성하는 함수
+ ** 스토어 설정 및 생성하는 함수
  */
 const configureStore = () => {
   const sagaMiddleware = createSagaMiddleware(); // redux-saga
@@ -28,11 +29,12 @@ const configureStore = () => {
   return store;
 };
 
-/*
- * Next에서 Redux 설정하기
+/**
+ ** Next의 Lifecycle을 Redux에 결합하기 위한 설정
  */
 const wrapper = createWrapper(configureStore, {
-  debug: process.env.NODE_ENV === 'development',
+  // debug: process.env.NODE_ENV === 'development',
+  debug: false,
 });
 
 export default wrapper;
