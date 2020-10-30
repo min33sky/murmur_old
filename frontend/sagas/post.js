@@ -29,6 +29,12 @@ import {
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
 } from '../reducers/post';
 
 function addPostApi(formData) {
@@ -255,6 +261,55 @@ function* loadPost(action) {
   }
 }
 
+function loadUserPostsApi(data) {
+  return axios.get(`/user/${data.userId}/posts?lastId=${data.lastId || 0}`);
+}
+
+/**
+ * 특성 유저가 작성한 글을 불러오기
+ * @param {Object} action 특정 유저의 게시물들 불러오는 액션
+ */
+function* loadUserPosts(action) {
+  try {
+    const response = yield call(loadUserPostsApi, action.payload);
+
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
+function loadHashtagPostsApi(data) {
+  return axios.get(`/hashtag/${data.tagName}/posts?lastId=${data.lastId}`);
+}
+
+/**
+ * 해시태그로 게시물들 불러오기
+ * @param {Object} action 해쉬태그 게시물 요청 액션
+ */
+function* loadHashtagPosts(action) {
+  try {
+    const response = yield call(loadHashtagPostsApi, action.payload);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
 //----------------------------------------------------------------------------
 //* Watch
 //----------------------------------------------------------------------------
@@ -301,6 +356,14 @@ function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
+function* watchLoadUserPosts() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+
+function* watchLoadHashtagPosts() {
+  yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -312,5 +375,7 @@ export default function* postSaga() {
     fork(watchUnlikePost),
     fork(watchUploadImage),
     fork(watchRetweet),
+    fork(watchLoadHashtagPosts),
+    fork(watchLoadUserPosts),
   ]);
 }

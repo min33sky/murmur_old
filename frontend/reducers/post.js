@@ -22,6 +22,14 @@ export const LOAD_POST_REQUEST = 'post/LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'post/LOAD_POST_SUCCESS';
 export const LOAD_POST_FAILURE = 'post/LOAD_POST_FAILURE';
 
+export const LOAD_USER_POSTS_REQUEST = 'post/LOAD_USER_POSTS_REQUEST';
+export const LOAD_USER_POSTS_SUCCESS = 'post/LOAD_USER_POSTS_SUCCESS';
+export const LOAD_USER_POSTS_FAILURE = 'post/LOAD_USER_POSTS_FAILURE';
+
+export const LOAD_HASHTAG_POSTS_REQUEST = 'post/LOAD_HASHTHAG_POSTS_REQUEST';
+export const LOAD_HASHTAG_POSTS_SUCCESS = 'post/LOAD_HASHTHAG_POSTS_SUCCESS';
+export const LOAD_HASHTAG_POSTS_FAILURE = 'post/LOAD_HASHTHAG_POSTS_FAILURE';
+
 export const REMOVE_POST_REQUEST = 'post/REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'post/REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'post/REMOVE_POST_FAILURE';
@@ -163,12 +171,16 @@ const reducer = (state = initialState, action) =>
         break;
 
       // 게시물 관련
+      case LOAD_USER_POSTS_REQUEST:
+      case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
         draft.loadPostsError = null;
         break;
 
+      case LOAD_USER_POSTS_SUCCESS:
+      case LOAD_HASHTAG_POSTS_SUCCESS:
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
@@ -176,6 +188,8 @@ const reducer = (state = initialState, action) =>
         draft.hasMorePosts = action.payload.length === 10; // 10개씩 불러온다. 10개 이하일 경우 다음엔 로드 금지
         break;
 
+      case LOAD_USER_POSTS_FAILURE:
+      case LOAD_HASHTAG_POSTS_FAILURE:
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.payload;

@@ -11,6 +11,7 @@ const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
+const hashtagRouter = require('./routes/hashtag');
 
 const SERVER_PORT = 3065; // Backend Server Port
 
@@ -70,6 +71,7 @@ app.use(express.urlencoded({ extended: true })); // Form Data Parsing
 app.use('/posts', postsRouter);
 app.use('/post', postRouter);
 app.use('/user', userRouter);
+app.use('/hashtag', hashtagRouter);
 
 // ? 예외처리 미들웨어를 커스터마이징
 // ? 에러 페이지로 라우팅등 활용 가능
