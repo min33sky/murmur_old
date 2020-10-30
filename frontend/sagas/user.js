@@ -31,6 +31,9 @@ import {
   REMOVE_FOLLOWER_REQUEST,
   REMOVE_FOLLOWER_FAILURE,
   REMOVE_FOLLOWER_SUCCESS,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
 } from '../reducers/user';
 
 function loginApi(data) {
@@ -267,6 +270,31 @@ function* removeFollower(action) {
   }
 }
 
+function loadUserApi(userId) {
+  return axios.get(`/user/${userId}`);
+}
+
+/**
+ * 사용자 정보 가져오기
+ * @param {Object} action 사용자 정보 가져오기 액션
+ */
+function* loadUser(action) {
+  try {
+    const response = yield call(loadUserApi, action.payload);
+
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_USER_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
 function* watchLogin() {
   yield takeLatest(LOG_IN_REQUEST, login);
 }
@@ -307,6 +335,10 @@ function* watchRemoveFollower() {
   yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
 }
 
+function* watchLoadUser() {
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
@@ -319,5 +351,6 @@ export default function* userSaga() {
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchRemoveFollower),
+    fork(watchLoadUser),
   ]);
 }

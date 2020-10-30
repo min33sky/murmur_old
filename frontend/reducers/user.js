@@ -42,10 +42,15 @@ export const REMOVE_FOLLOWER_REQUEST = 'user/REMOVE_FOLLOWER_REQUEST';
 export const REMOVE_FOLLOWER_SUCCESS = 'user/REMOVE_FOLLOWER_SUCCESS';
 export const REMOVE_FOLLOWER_FAILURE = 'user/REMOVE_FOLLOWER_FAILURE';
 
-// 로그인 유지 체크
+// 로그인 유지 체크 (내 정보 요청)
 export const LOAD_MY_INFO_REQUEST = 'user/LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'user/LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'user/LOAD_MY_INFO_FAILURE';
+
+// 특정 사용자 정보 요청
+export const LOAD_USER_REQUEST = 'user/LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'user/LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'user/LOAD_USER_FAILURE';
 
 //----------------------------------------------------------------------------
 //* Action Function
@@ -118,6 +123,9 @@ const initialState = {
   loadMyInfoLoading: false,
   loadMyInfoDone: false,
   loadMyInfoError: null,
+  loadUserLoading: false,
+  loadUserDone: false,
+  loadUserError: null,
   loadFollowersLoading: false,
   loadFollowersDone: false,
   loadFollowersError: null,
@@ -128,8 +136,7 @@ const initialState = {
   removeFollowerDone: false,
   removeFollowerError: null,
   me: null, // 로그인 한 사용자 정보
-  // signedUpData: {}, // 가입 요청 데이터
-  // loginData: [], // 로그인 요청 데이터
+  userInfo: null, // 특정 사용자 정보
 };
 
 const reducer = (state = initialState, action) =>
@@ -255,6 +262,24 @@ const reducer = (state = initialState, action) =>
       case LOAD_MY_INFO_FAILURE:
         draft.loadMyInfoLoading = false;
         draft.loadMyInfoError = action.payload;
+        break;
+
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserDone = false;
+        draft.loadUserError = null;
+        break;
+
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.userInfo = action.payload;
+        break;
+
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.loadUserError = action.payload;
         break;
 
       case LOAD_FOLLOWERS_REQUEST:

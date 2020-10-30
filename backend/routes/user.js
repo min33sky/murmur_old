@@ -53,6 +53,52 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
+ * 특정 사용자 정보 가져오기
+ * GET /:id
+ */
+router.get('/:id', async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: {
+        id: req.params.id,
+      },
+      attributes: {
+        exclude: ['password'],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followings',
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followers',
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON(); // 시퀄라이즈 객체를 JSON으로 변경
+      data.Posts = data.Posts.length;
+      data.Followings = data.Followings.length;
+      data.Followers = data.Followers.length;
+      return res.status(200).json(data);
+    }
+
+    return res.status(404).json('존재하지 않는 사용자입니다.');
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+/**
  * 로그인 요청
  * ? 패스포트와 미들웨어 확장을 이용한다.
  * POST /login
