@@ -18,6 +18,10 @@ export const LOAD_POSTS_REQUEST = 'post/LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'post/LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'post/LOAD_POSTS_FAILURE';
 
+export const LOAD_POST_REQUEST = 'post/LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'post/LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'post/LOAD_POST_FAILURE';
+
 export const REMOVE_POST_REQUEST = 'post/REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'post/REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'post/REMOVE_POST_FAILURE';
@@ -117,6 +121,7 @@ export const generateDummyPost = (number) =>
 
 const initialState = {
   mainPosts: [],
+  singlePost: null, // 특정 게시물 하나
   imagePaths: [], // 업로드 할 이미지 주소
   hasMorePosts: true, // 불러올 게시물이 더 있는지 체크
   addPostLoading: false,
@@ -125,6 +130,9 @@ const initialState = {
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -171,6 +179,23 @@ const reducer = (state = initialState, action) =>
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.payload;
+        break;
+
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.payload;
+        break;
+
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.payload;
         break;
 
       case ADD_POST_REQUEST:

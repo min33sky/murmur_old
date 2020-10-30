@@ -3,10 +3,12 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { END } from 'redux-saga';
 import AppLayout from '../../components/AppLayout/index';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
+import { LOAD_POST_REQUEST } from '../../reducers/post';
 
 /**
  * 게시물 동적 페이지
@@ -16,6 +18,10 @@ function Post() {
   const router = useRouter();
   const { id } = router.query;
   const { singlePost } = useSelector((state) => state.post);
+
+  /**
+   * TODO: 게시물이 없을 때 처리가 필요하다 (404 ERROR)
+   */
 
   return (
     <AppLayout>
@@ -53,8 +59,13 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   });
 
   context.store.dispatch({
-    // TODO: 게시물 가져오기
+    type: LOAD_POST_REQUEST,
+    payload: context.params.id,
   });
+
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+  return { props: {} };
 });
 
 export default Post;

@@ -130,6 +130,53 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
 });
 
 /**
+ * 게시물 불러오기
+ * GET /:postId
+ */
+router.get('/:postId', async (req, res, next) => {
+  try {
+    // 게시물이 있는지 확인
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+      include: [
+        {
+          model: User, // 글 작성자
+          attributes: ['id', 'nickname'],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User, // 댓글 작성자
+              attributes: ['id', 'nickname'],
+            },
+          ],
+        },
+        {
+          model: User, // 좋아요 정보
+          as: 'Likers',
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    if (!post) {
+      return res.status(404).send('해당 게시물이 존재하지 않습니다.');
+    }
+
+    return res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+/**
  * 게시물 삭제
  * DELETE /:postId
  */

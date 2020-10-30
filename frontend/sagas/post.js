@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, put, delay, throttle, call } from 'redux-saga/effects';
+import { all, fork, takeLatest, put, throttle, call } from 'redux-saga/effects';
 import axios from 'axios';
 import {
   ADD_POST_REQUEST,
@@ -26,6 +26,9 @@ import {
   RETWEET_REQUEST,
   RETWEET_SUCCESS,
   RETWEET_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
 } from '../reducers/post';
 
 function addPostApi(formData) {
@@ -231,6 +234,27 @@ function* retweet(action) {
   }
 }
 
+function loadPostApi(postId) {
+  return axios.get(`/post/${postId}`);
+}
+
+function* loadPost(action) {
+  try {
+    const response = yield call(loadPostApi, action.payload);
+
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_POST_FAILURE,
+      payload: error.response.data,
+    });
+  }
+}
+
 //----------------------------------------------------------------------------
 //* Watch
 //----------------------------------------------------------------------------
@@ -273,11 +297,16 @@ function* watchRetweet() {
   yield takeLatest(RETWEET_REQUEST, retweet);
 }
 
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
+    fork(watchLoadPost),
     fork(watchLoadPosts),
     fork(watchLikePost),
     fork(watchUnlikePost),
