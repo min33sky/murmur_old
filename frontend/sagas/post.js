@@ -244,6 +244,10 @@ function loadPostApi(postId) {
   return axios.get(`/post/${postId}`);
 }
 
+/**
+ * 게시물 불러오기
+ * @param {Object} action 게시물 불러오기 액션
+ */
 function* loadPost(action) {
   try {
     const response = yield call(loadPostApi, action.payload);
