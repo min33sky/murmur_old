@@ -291,7 +291,8 @@ function* loadUserPosts(action) {
 }
 
 function loadHashtagPostsApi(data) {
-  return axios.get(`/hashtag/${data.tagName}/posts?lastId=${data.lastId}`);
+  // ? 한글 해시태그를 정상적으로 전달하기 위해 태그를 인코딩 해준다.
+  return axios.get(`/hashtag/${encodeURIComponent(data.tag)}/posts?lastId=${data.lastId || 0}`);
 }
 
 /**

@@ -1,6 +1,6 @@
 const express = require('express');
 const { Op } = require('sequelize');
-const { Hashtag, Post, User } = require('../models');
+const { Hashtag, Post, User, Image, Comment } = require('../models');
 
 const router = express.Router();
 
@@ -44,13 +44,13 @@ router.get('/:tag/posts', async (req, res, next) => {
           ],
         },
         {
-          model: User,
+          model: User, // 좋아요 누른 사용자 정보
           through: 'Like',
           as: 'Likers',
           attributes: ['id', 'nickname'],
         },
         {
-          model: Post,
+          model: Post, // 리트윗한 글 정보
           as: 'Retweet',
           include: [
             {
