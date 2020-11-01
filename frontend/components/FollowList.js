@@ -22,7 +22,10 @@ const ListItemWrapper = styled(List.Item)`
  */
 function FollowList({ header, data, onClickMore, loading }) {
   const dispatch = useDispatch();
-  // ? useMemo로 스타일 객체를 감싸서 리렌더링을 방지할 수 있다.
+  /**
+   *? styled-Complnents 대신 useMemo를 사용해서
+   *? 리렌더링을 방지할 수 있다.
+   */
   const listStyle = useMemo(() => ({ marginBottom: 20 }), []);
   const grid = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }), []);
   const cardMetaStyle = useMemo(() => ({ textAlign: 'center' }), []);

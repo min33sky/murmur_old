@@ -20,6 +20,8 @@ const { Title, Paragraph } = Typography;
 function Profile() {
   const { me } = useSelector((state) => state.user);
 
+  // 팔로워, 팔로잉을 3개씩 불러온다.
+  //! 이전에 불러왔던 데이터도 같이 불러오기 때문에 최적화가 필요하다
   const [followingsLimit, setFollowingsLimit] = useState(3);
   const [followersLimit, setFollowersLimit] = useState(3);
 
@@ -35,7 +37,7 @@ function Profile() {
     fetcher,
   );
   const { data: followersData, error: followersError } = useSWR(
-    `http://localhost:er5/user/followers?limit=${followersLimit}`,
+    `http://localhost:3065/user/followers?limit=${followersLimit}`,
     fetcher,
   );
 

@@ -54,52 +54,6 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * 특정 사용자 정보 가져오기
- * GET /user/:id
- */
-router.get('/:id', async (req, res, next) => {
-  try {
-    const fullUserWithoutPassword = await User.findOne({
-      where: {
-        id: req.params.id,
-      },
-      attributes: {
-        exclude: ['password'],
-      },
-      include: [
-        {
-          model: Post,
-          attributes: ['id'],
-        },
-        {
-          model: User,
-          as: 'Followings',
-          attributes: ['id'],
-        },
-        {
-          model: User,
-          as: 'Followers',
-          attributes: ['id'],
-        },
-      ],
-    });
-
-    if (fullUserWithoutPassword) {
-      const data = fullUserWithoutPassword.toJSON(); // 시퀄라이즈 객체를 JSON으로 변경
-      data.Posts = data.Posts.length;
-      data.Followings = data.Followings.length;
-      data.Followers = data.Followers.length;
-      return res.status(200).json(data);
-    }
-
-    return res.status(404).json('존재하지 않는 사용자입니다.');
-  } catch (error) {
-    console.error(error);
-    return next(error);
-  }
-});
-
-/**
  * 특정 유저의 게시물 목록 가져오기
  * GET /user/:id/posts?lastId
  */
@@ -367,7 +321,7 @@ router.delete('/:userId/follow', isLoggedIn, async (req, res, next) => {
 
 /**
  * 팔로잉 목록 가져오기
- * GET /followings
+ * GET /followings?limit
  */
 router.get('/followings', isLoggedIn, async (req, res, next) => {
   try {
@@ -378,12 +332,14 @@ router.get('/followings', isLoggedIn, async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(403).send('없는 사람입니다.');
+      return res.status(403).send('존재하지 않는 사용자입니다.');
     }
 
-    const followings = await user.getFollowings();
-
-    console.log('###### :', followings);
+    // 사용자의 팔로잉 목록을 가져온다.
+    const followings = await user.getFollowings({
+      attributes: ['id', 'nickname'],
+      limit: parseInt(req.query.limit, 10),
+    });
 
     return res.status(200).json(followings);
   } catch (error) {
@@ -394,7 +350,7 @@ router.get('/followings', isLoggedIn, async (req, res, next) => {
 
 /**
  * 팔로워 목록 가져오기
- * GET /followers
+ * GET /followers?limit
  */
 router.get('/followers', isLoggedIn, async (req, res, next) => {
   try {
@@ -405,12 +361,14 @@ router.get('/followers', isLoggedIn, async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(403).send('없는 사람입니다.');
+      return res.status(403).send('존재하지 않는 사용자입니다.');
     }
 
-    const followers = await user.getFollowers();
+    const followers = await user.getFollowers({
+      attributes: ['id', 'nickname'],
+      limit: parseInt(req.query.limit, 10),
+    });
 
-    console.log('###### :', followers);
     return res.status(200).json(followers);
   } catch (error) {
     console.error(error);
@@ -439,6 +397,52 @@ router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
     return res.status(200).json({
       id: parseInt(req.params.userId, 10),
     });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+/**
+ * 특정 사용자 정보 가져오기
+ * GET /user/:id
+ */
+router.get('/:id', async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: {
+        id: req.params.id,
+      },
+      attributes: {
+        exclude: ['password'],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followings',
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followers',
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON(); // 시퀄라이즈 객체를 JSON으로 변경
+      data.Posts = data.Posts.length;
+      data.Followings = data.Followings.length;
+      data.Followers = data.Followers.length;
+      return res.status(200).json(data);
+    }
+
+    return res.status(404).json('존재하지 않는 사용자입니다.');
   } catch (error) {
     console.error(error);
     return next(error);
