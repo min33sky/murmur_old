@@ -7,7 +7,9 @@ const { isLoggedIn } = require('./middlewares');
 const router = express.Router();
 const { Post, Comment, Image, User, Hashtag } = require('../models');
 
-// 업로드 폴더 생성
+/**
+ * 업로드 폴더 생성
+ */
 try {
   fs.accessSync('uploads');
 } catch (error) {
@@ -22,7 +24,7 @@ try {
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, done) {
-      done(null, 'uploads'); // uploads 폴더
+      done(null, 'uploads'); // uploads 폴더에 파일을 업로드한다
     },
     filename(req, file, done) {
       // ex) messi.png
@@ -32,13 +34,13 @@ const upload = multer({
     },
   }),
   limits: {
-    fileSize: 20 * 1024 * 1024, // 20MB
+    fileSize: 20 * 1024 * 1024, // 20MB 제한
   },
 });
 
 /**
- * 이미지 업로드
- * POST /images
+ * 이미지 파일 업로드
+ * POST /post/images
  */
 router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
   console.log(req.files);
@@ -62,6 +64,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
     // 글에서 해시태그 가져오기
     const hashtag = req.body.content.match(/#[^\s#]+/g);
 
+    // 해시태그가 있으면 DB에 저장
     if (hashtag) {
       const result = await Promise.all(
         hashtag.map((tag) =>
@@ -78,6 +81,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
       await post.addHashtags(result.map((item) => item[0]));
     }
 
+    // 이미지 파일이 있으면 DB에 저장
     if (req.body.image) {
       // 이미지 개수에 따라 처리
       if (Array.isArray(req.body.image)) {
@@ -131,7 +135,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
 
 /**
  * 게시물 불러오기
- * GET /:postId
+ * GET /post/:postId
  */
 router.get('/:postId', async (req, res, next) => {
   try {
@@ -178,7 +182,7 @@ router.get('/:postId', async (req, res, next) => {
 
 /**
  * 게시물 삭제
- * DELETE /:postId
+ * DELETE /post/:postId
  */
 router.delete('/:postId', isLoggedIn, async (req, res, next) => {
   try {
@@ -200,7 +204,7 @@ router.delete('/:postId', isLoggedIn, async (req, res, next) => {
 
 /**
  * 댓글 등록
- * POST /:postId/comment
+ * POST /post/:postId/comment
  */
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   try {
@@ -243,7 +247,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
 
 /**
  * 게시물 좋아요
- * PATCH /:postId/like
+ * PATCH /post/:postId/like
  */
 router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
   try {
@@ -272,7 +276,7 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
 
 /**
  * 게시물 좋아요 취소
- * DELETE /:postId/like
+ * DELETE /post/:postId/like
  */
 router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
   try {
@@ -300,7 +304,7 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
 
 /**
  * 리트윗
- * POST /:postId/retweet
+ * POST /post/:postId/retweet
  */
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
   try {

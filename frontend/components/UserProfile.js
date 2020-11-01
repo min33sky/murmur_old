@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutRequestAction } from '../reducers/user';
+import { LOG_OUT_REQUEST } from '../reducers/user';
 
 /**
  * 프로필 컴포넌트
@@ -12,7 +12,9 @@ function UserProfile() {
   const dispatch = useDispatch();
 
   const onLogout = useCallback(() => {
-    dispatch(logoutRequestAction());
+    dispatch({
+      type: LOG_OUT_REQUEST,
+    });
   }, []);
 
   return (

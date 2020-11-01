@@ -20,7 +20,7 @@ const ListItemWrapper = styled(List.Item)`
  * @param {string} header 이름
  * @param {array} data 팔로우 목록
  */
-function FollowList({ header, data }) {
+function FollowList({ header, data, onClickMore, loading }) {
   const dispatch = useDispatch();
   // ? useMemo로 스타일 객체를 감싸서 리렌더링을 방지할 수 있다.
   const listStyle = useMemo(() => ({ marginBottom: 20 }), []);
@@ -53,7 +53,9 @@ function FollowList({ header, data }) {
       header={<div>{header}</div>}
       loadMore={
         <MoreButtonWrapper>
-          <Button>더 보기</Button>
+          <Button onClick={onClickMore} loading={loading}>
+            더 보기
+          </Button>
         </MoreButtonWrapper>
       }
       bordered
@@ -72,6 +74,8 @@ function FollowList({ header, data }) {
 FollowList.propTypes = {
   header: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
+  onClickMore: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default FollowList;

@@ -11,6 +11,7 @@ Can U Hear Me?
 - react-slick
 - shortid
 - faker
+- SWR
 
 ## Backend
 

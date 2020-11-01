@@ -61,10 +61,6 @@ export const loginRequestAction = (loginData) => ({
   payload: loginData,
 });
 
-export const logoutRequestAction = () => ({
-  type: LOG_OUT_REQUEST,
-});
-
 export const signupRequestAction = (signUpData) => ({
   type: SIGN_UP_REQUEST,
   payload: signUpData,
