@@ -30,7 +30,7 @@ function Profile() {
 
   /**
    *? SWR
-   *? data와 error 둘 다 없으면 loading이 true인 것이다
+   *? data와 error 둘 다 없으면 loading이 true
    */
   const { data: followingsData, error: followingsError } = useSWR(
     `http://localhost:3065/user/followings?limit=${followingsLimit}`,
