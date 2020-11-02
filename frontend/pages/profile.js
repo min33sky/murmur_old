@@ -62,7 +62,7 @@ function Profile() {
     return <div>로그인 정보 로딩중</div>;
   }
 
-  // 팔로잉, 팔로워 에러 발생 시
+  // 팔로잉, 팔로워 에러 발생 시b
   if (followingsError || followersError) {
     console.error(followingsError || followersError);
     return <div>팔로잉, 팔로워 로딩 에러</div>;
