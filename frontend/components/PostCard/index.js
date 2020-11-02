@@ -9,6 +9,7 @@ import {
   HeartTwoTone,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link';
 import PostImages from '../PostImages';
 import CommentForm from '../CommentForm';
 import PostCardContent from '../PostCardContent';
@@ -21,7 +22,7 @@ import {
 import FollowButton from '../FollowButton';
 
 /**
- * 글 내용을 보여줄 카드
+ * 글 내용을 보여줄 카드 컴포넌트
  * @param {Object} post 게시글 정보
  */
 function PostCard({ post }) {
@@ -72,6 +73,10 @@ function PostCard({ post }) {
     dispatch(removePostRequestAction(post.id));
   }, []);
 
+  const onEditPost = useCallback(() => {
+    alert('준비중');
+  }, []);
+
   const onRetweet = useCallback(() => {
     if (!id) {
       return alert('로그인 하세요');
@@ -108,7 +113,7 @@ function PostCard({ post }) {
               <Button.Group>
                 {id && id === post.User.id ? (
                   <>
-                    <Button>수정</Button>
+                    <Button onClick={onEditPost}>수정</Button>
                     <Button type='danger' onClick={onRemovePost} loading={removePostLoading}>
                       삭제
                     </Button>
@@ -125,21 +130,36 @@ function PostCard({ post }) {
         title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
         extra={me && <FollowButton post={post} />}
       >
-        {post.RetweetId && post.Retweet ? (
-          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+        {
+          // 게시물 내용
+          post.RetweetId && post.Retweet ? (
+            <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+              <Card.Meta
+                avatar={
+                  <Link href={`/user/${post.User.id}`}>
+                    <a>
+                      <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
+                    </a>
+                  </Link>
+                }
+                title={post.Retweet.User.nickname}
+                description={<PostCardContent content={post.Retweet.content} />}
+              />
+            </Card>
+          ) : (
             <Card.Meta
-              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
-              title={post.Retweet.User.nickname}
-              description={<PostCardContent content={post.Retweet.content} />}
+              avatar={
+                <Link href={`/user/${post.User.id}`}>
+                  <a>
+                    <Avatar>{post.User.nickname[0]}</Avatar>
+                  </a>
+                </Link>
+              }
+              title={post.User.nickname}
+              description={<PostCardContent content={post.content} />}
             />
-          </Card>
-        ) : (
-          <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            title={post.User.nickname}
-            description={<PostCardContent content={post.content} />}
-          />
-        )}
+          )
+        }
       </Card>
 
       {commentFormOpened && (
@@ -153,7 +173,13 @@ function PostCard({ post }) {
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  avatar={
+                    <Link href={`/user/${item.User.id}`}>
+                      <a>
+                        <Avatar>{item.User.nickname[0]}</Avatar>
+                      </a>
+                    </Link>
+                  }
                   content={item.content}
                 />
               </li>
