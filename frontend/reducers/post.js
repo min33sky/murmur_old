@@ -1,6 +1,6 @@
 import shortid from 'shortid';
-import produce from 'immer';
 import faker from 'faker';
+import produce from '../util/produce';
 
 //----------------------------------------------------------------------------
 //* Action Type

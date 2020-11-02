@@ -1,29 +1,38 @@
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define(
-    'User',
-    {
-      // id는 DB에 자동으로 들어감
-      email: {
-        type: DataTypes.STRING(30),
-        allowNull: false,
-        unique: true,
-      },
-      nickname: {
-        type: DataTypes.STRING(30),
-        allowNull: false,
-      },
-      password: {
-        type: DataTypes.STRING(100), // 암호화를 위해 충분한 공간 확보
-        allowNull: false,
-      },
-    },
-    {
-      charset: 'utf8',
-      collate: 'utf8_general_ci', // 한글저장
-    },
-  );
+const DataTypes = require('sequelize');
 
-  User.associate = (db) => {
+const { Model } = DataTypes;
+
+module.exports = class User extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        email: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+          unique: true,
+        },
+
+        nickname: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+        },
+
+        password: {
+          type: DataTypes.STRING(100), // 암호화를 위해 충분한 공간 확보
+          allowNull: false,
+        },
+      },
+      {
+        modelName: 'User',
+        tableName: 'users',
+        charset: 'utf8',
+        collate: 'utf8_general_ci', // 한글저장
+        sequelize,
+      },
+    );
+  }
+
+  static associate(db) {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
     /**
@@ -37,12 +46,11 @@ module.exports = (sequelize, DataTypes) => {
       as: 'Followings',
       foreignKey: 'FollowerId',
     });
+
     db.User.belongsToMany(db.User, {
       through: 'Follow',
       as: 'Followers',
       foreignKey: 'FollowingId',
     });
-  };
-
-  return User;
+  }
 };

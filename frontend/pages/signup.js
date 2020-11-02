@@ -3,9 +3,12 @@ import { Form, Input, Button, Checkbox, Typography } from 'antd';
 import styled from 'styled-components';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { END } from 'redux-saga';
 import useInput from '../hooks/useInput';
 import AppLayout from '../components/AppLayout';
-import { signupRequestAction } from '../reducers/user';
+import { LOAD_MY_INFO_REQUEST, signupRequestAction } from '../reducers/user';
+import wrapper from '../store/configureStore';
 
 const { Title, Paragraph } = Typography;
 
@@ -14,7 +17,8 @@ const ErrorMessage = styled.div`
 `;
 
 /**
- * 회원 가입 페이지 (/signup)
+ * 회원 가입 페이지
+ * /signup
  */
 const Signup = () => {
   const dispatch = useDispatch();
@@ -133,5 +137,24 @@ const Signup = () => {
     </AppLayout>
   );
 };
+
+//-----------------------------------------------------------------------------
+//* Server-Side-Rendering
+//-----------------------------------------------------------------------------
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+});
 
 export default Signup;
