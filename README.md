@@ -10,8 +10,9 @@ Can U Hear Me?
 - styledComponents
 - react-slick
 - shortid
-- faker
+- faker (**배포 할 때는 삭제하자**)
 - swr
+- dayjs
 
 ## Backend
 

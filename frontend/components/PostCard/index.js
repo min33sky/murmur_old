@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
+import dayjs from 'dayjs';
 import PostImages from '../PostImages';
 import CommentForm from '../CommentForm';
 import PostCardContent from '../PostCardContent';
@@ -20,6 +21,8 @@ import {
   UNLIKE_POST_REQUEST,
 } from '../../reducers/post';
 import FollowButton from '../FollowButton';
+
+dayjs.locale('ko'); // 헌귝 사건
 
 /**
  * 글 내용을 보여줄 카드 컴포넌트
@@ -147,17 +150,20 @@ function PostCard({ post }) {
               />
             </Card>
           ) : (
-            <Card.Meta
-              avatar={
-                <Link href={`/user/${post.User.id}`}>
-                  <a>
-                    <Avatar>{post.User.nickname[0]}</Avatar>
-                  </a>
-                </Link>
-              }
-              title={post.User.nickname}
-              description={<PostCardContent content={post.content} />}
-            />
+            <>
+              <span style={{ float: 'right' }}>{dayjs(post.createdAt).format('YYYY.MM.DD')}</span>
+              <Card.Meta
+                avatar={
+                  <Link href={`/user/${post.User.id}`}>
+                    <a>
+                      <Avatar>{post.User.nickname[0]}</Avatar>
+                    </a>
+                  </Link>
+                }
+                title={post.User.nickname}
+                description={<PostCardContent content={post.content} />}
+              />
+            </>
           )
         }
       </Card>
