@@ -13,7 +13,7 @@
     "@ant-design/icons": "^4.2.2",
     "@next/bundle-analyzer": "^10.0.0",
     "antd": "^4.7.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cross-env": "^7.0.2",
     "dayjs": "^1.9.4",
     "faker": "^5.1.0",
